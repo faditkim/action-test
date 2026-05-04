@@ -34,7 +34,6 @@ jobs:
             const timedOutCount = '5';
             const sourceEnv = 'dev';
             const destEnv = 'stg';
-            const robotResultsUrl = 'https://www.google.com';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
