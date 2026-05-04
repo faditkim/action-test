@@ -94,7 +94,7 @@ jobs:
                 datadogResult += `⚠️ Failed (Non-blocking): ${failedNonBlockingCount} \n ♻️ Previously Passed: ${previouslyPassedCount} \n`;
                 datadogResult += `⏱️ Timed Out: ${timedOutCount}`;
                 // Add Robot Tests summary of test results
-                robotResultsList = "${{ steps.step1.outputs.robotResults }}";
+                robotResultsList = ${{ steps.step1.outputs.robotResults }};
                 robotResultFactSet = [{ title: "Robot Results"}];
                 for (const result of robotResultsList) {
                     const parsedResult = JSON.parse(result);
