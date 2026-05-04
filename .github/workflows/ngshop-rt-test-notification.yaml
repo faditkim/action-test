@@ -1,4 +1,4 @@
-name: Test for Notifications
+name: Test for NGSHOP Release Train Notifications
 
 on:
   pull_request:
