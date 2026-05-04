@@ -170,11 +170,11 @@ jobs:
             });
 
             if (robotResultsUrl && robotResultsUrl !== "") {
-            actions.push({
-                type: "Action.OpenUrl",
-                title: `View Robot Results`,
-                url: "https://www.google.com"
-            });
+              actions.push({
+                  type: "Action.OpenUrl",
+                  title: `View Robot Results`,
+                  url: "https://www.google.com"
+              });
             }
 
             // Build the complete card
