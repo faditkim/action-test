@@ -34,7 +34,7 @@ jobs:
             const timedOutCount = '5';
             const sourceEnv = 'dev';
             const destEnv = 'stg';
-            cost hasConflicts = false;
+            const hasConflicts = false;
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
