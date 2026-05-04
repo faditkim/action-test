@@ -230,3 +230,10 @@ jobs:
 
             // Output the card as a JSON string
             console.log(JSON.stringify(card));
+            core.setOutput('card_payload', JSON.stringify(card));
+
+      - name: Send notification to MS Teams
+        uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
+        with:
+          webhook_url: https://prod-153.westeurope.logic.azure.com:443/workflows/cbca81d861c24a74963c7fec32bb5582/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=moIDXUsWZN2Ccr9qHLTRWAHAwLbMgK3b5Srwoht_i_Y
+          raw: ${{ steps.build-card.outputs.card_payload }}
