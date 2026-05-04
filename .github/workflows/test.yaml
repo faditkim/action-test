@@ -13,12 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set robot results
-        id: robot-summary
+        id: step1
         run: |
-          echo "robotResults=['{"team": "buyfulfill", "passed": 12, "failed": 0}', '{"team": "welcome", "passed": 3, "failed": 0}']" >> $GITHUB_OUTPUT
+          echo "robotResults=['{\"team\": \"buyfulfill\", \"passed\": 12, \"failed\": 0}', '{\"team\": \"welcome\", \"passed\": 3, \"failed\": 0}']" >> $GITHUB_OUTPUT
       - name: Use robot results
         run: |
-          echo "${{ steps.robot-summary.outputs.robotResults }}"
+          echo "${{ steps.step1.outputs.robotResults }}"
 
       - name: Build AdaptiveCard payload for Teams
         id: build-card
@@ -94,7 +94,7 @@ jobs:
                 datadogResult += `⚠️ Failed (Non-blocking): ${failedNonBlockingCount} \n ♻️ Previously Passed: ${previouslyPassedCount} \n`;
                 datadogResult += `⏱️ Timed Out: ${timedOutCount}`;
                 // Add Robot Tests summary of test results
-                robotResultsList = '${{ steps.robot-summary.outputs.robotResults }}';
+                robotResultsList = "${{ steps.step1.outputs.robotResults }}";
                 robotResultFactSet = [{ title: "Robot Results"}];
                 for (const result of robotResultsList) {
                     const parsedResult = JSON.parse(result);
