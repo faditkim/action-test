@@ -1,0 +1,21 @@
+name: Test for Notifications
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set robot results
+        id: step1
+        run: |
+          echo "robotResults=['{\"team\": \"buyfulfill\", \"passed\": 12, \"failed\": 0}', '{\"team\": \"welcome\", \"passed\": 3, \"failed\": 0}']" >> $GITHUB_OUTPUT
+      - name: Use robot results
+        run: |
+          echo "${{ steps.step1.outputs.robotResults }}"
