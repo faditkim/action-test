@@ -27,7 +27,7 @@ jobs:
           import json
 
           passed = failed = total = 0
-          teams = ['buyfulfill']
+          teams = ['buyfulfill', 'welcome']
           robotResults = []
 
           files = glob.glob("**/output.xml", recursive=True)
