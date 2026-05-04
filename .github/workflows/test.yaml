@@ -12,187 +12,220 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set robot results
-        id: step1
+      - name: Copy XML
         run: |
-          echo "robotResults=['{\"team\": \"buyfulfill\", \"passed\": 12, \"failed\": 0}', '{\"team\": \"welcome\", \"passed\": 3, \"failed\": 0}']" >> $GITHUB_OUTPUT
+          mkdir -p results
+          cp output.xml results/output.xml
+      - name: Parse Robot Framework results
+        id: robot-summary
+        if: always()
+        run: |
+          python - << 'EOF'
+          import xml.etree.ElementTree as ET
+          import os
+          import glob
+
+          passed = failed = total = 0
+          teams = ['buyfulfill']
+          robotResults = []
+
+          files = glob.glob("**/output.xml", recursive=True)
+          if not files:
+              print("❌ output.xml not found")
+          else:
+              print("✅ Found output.xml:", files[0])
+              tree = ET.parse(files[0])
+              root = tree.getroot()
+              tags = root.findall('statistics/tag/stat')
+              for tag in tags:
+                  if tag.text.startswith("team:"):
+                      team = tag.text.split(":")[1]
+                      if team in teams:
+                          passed = int(tag.attrib['pass'])
+                          failed = int(tag.attrib['fail'])
+                          total = passed + failed
+                          print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
+                          robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write(f"robotResults={robotResults}\n")
+          EOF
       - name: Use robot results
         run: |
           echo "${{ steps.step1.outputs.robotResults }}"
 
-      - name: Build AdaptiveCard payload for Teams
-        id: build-card
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        with:
-          # language=javascript
-          script: |
-            const batchUrl = 'https://www.google.com';
-            const passedCount = '1';
-            const failedCount = '2';
-            const failedNonBlockingCount = '3';
-            const previouslyPassedCount = '4';
-            const timedOutCount = '5';
-            const sourceEnv = 'dev';
-            const destEnv = 'stg';
-            const hasConflicts = false;
+      # - name: Build AdaptiveCard payload for Teams
+      #   id: build-card
+      #   uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+      #   with:
+      #     # language=javascript
+      #     script: |
+      #       const batchUrl = 'https://www.google.com';
+      #       const passedCount = '1';
+      #       const failedCount = '2';
+      #       const failedNonBlockingCount = '3';
+      #       const previouslyPassedCount = '4';
+      #       const timedOutCount = '5';
+      #       const sourceEnv = 'dev';
+      #       const destEnv = 'stg';
+      #       const hasConflicts = false;
 
-            // Determine overall status
-            // Use || 0 to handle empty strings and NaN values when steps are skipped
-            const totalFailed = (parseInt(failedCount) || 0) + (parseInt(timedOutCount) || 0);
-            const totalTests = (parseInt(passedCount) || 0) + totalFailed + (parseInt(failedNonBlockingCount) || 0) + (parseInt(previouslyPassedCount) || 0);
-            const noTestsRan = totalTests === 0;
+      #       // Determine overall status
+      #       // Use || 0 to handle empty strings and NaN values when steps are skipped
+      #       const totalFailed = (parseInt(failedCount) || 0) + (parseInt(timedOutCount) || 0);
+      #       const totalTests = (parseInt(passedCount) || 0) + totalFailed + (parseInt(failedNonBlockingCount) || 0) + (parseInt(previouslyPassedCount) || 0);
+      #       const noTestsRan = totalTests === 0;
 
-            // Build the body items - failure header only
-            const bodyItems = [{
-                type: "Container",
-                style: "attention",
-                items: [
-                    {
-                        type: "ColumnSet",
-                        columns: [
-                            {
-                                type: "Column",
-                                width: "auto",
-                                items: [
-                                    {
-                                        type: "Image",
-                                        url: "https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png",
-                                        size: "small"
-                                    }
-                                ]
-                            },
-                            {
-                                type: "Column",
-                                width: "stretch",
-                                items: [
-                                    {
-                                        type: "TextBlock",
-                                        text: `🚂 Release train from ${sourceEnv} to ${destEnv} failed!`,
-                                        weight: "bolder",
-                                        size: "large",
-                                        wrap: true
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }];
+      #       // Build the body items - failure header only
+      #       const bodyItems = [{
+      #           type: "Container",
+      #           style: "attention",
+      #           items: [
+      #               {
+      #                   type: "ColumnSet",
+      #                   columns: [
+      #                       {
+      #                           type: "Column",
+      #                           width: "auto",
+      #                           items: [
+      #                               {
+      #                                   type: "Image",
+      #                                   url: "https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png",
+      #                                   size: "small"
+      #                               }
+      #                           ]
+      #                       },
+      #                       {
+      #                           type: "Column",
+      #                           width: "stretch",
+      #                           items: [
+      #                               {
+      #                                   type: "TextBlock",
+      #                                   text: `🚂 Release train from ${sourceEnv} to ${destEnv} failed!`,
+      #                                   weight: "bolder",
+      #                                   size: "large",
+      #                                   wrap: true
+      #                               }
+      #                           ]
+      #                       }
+      #                   ]
+      #               }
+      #           ]
+      #       }];
 
-            // Add error message or test results
-            if (noTestsRan) {
-                bodyItems.push({
-                    type: "TextBlock",
-                    text: `ERROR: No tests ran. [Check workflow run](${runUrl})`,
-                    wrap: true,
-                    separator: true,
-                    color: "attention"
-                });
-            } else {
-                // Add datadog summary of test results
-                datadogResult = `📊 Total: ${totalTests} \n✅ Passed: ${passedCount} \n❌ Failed: ${failedCount} \n`;
-                datadogResult += `⚠️ Failed (Non-blocking): ${failedNonBlockingCount} \n ♻️ Previously Passed: ${previouslyPassedCount} \n`;
-                datadogResult += `⏱️ Timed Out: ${timedOutCount}`;
-                // Add Robot Tests summary of test results
-                robotResultsList = ${{ steps.step1.outputs.robotResults }};
-                robotResultFactSet = [{ title: "Robot Results"}];
-                for (const result of robotResultsList) {
-                    const parsedResult = JSON.parse(result);
-                    team = parsedResult.team;
-                    passed = parsedResult.passed;
-                    failed = parsedResult.failed;
-                    total = passed + failed;
-                    value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
-                    robotResultFactSet.push({ title: team, value: value});
-                }
+      #       // Add error message or test results
+      #       if (noTestsRan) {
+      #           bodyItems.push({
+      #               type: "TextBlock",
+      #               text: `ERROR: No tests ran. [Check workflow run](${runUrl})`,
+      #               wrap: true,
+      #               separator: true,
+      #               color: "attention"
+      #           });
+      #       } else {
+      #           // Add datadog summary of test results
+      #           datadogResult = `📊 Total: ${totalTests} \n✅ Passed: ${passedCount} \n❌ Failed: ${failedCount} \n`;
+      #           datadogResult += `⚠️ Failed (Non-blocking): ${failedNonBlockingCount} \n ♻️ Previously Passed: ${previouslyPassedCount} \n`;
+      #           datadogResult += `⏱️ Timed Out: ${timedOutCount}`;
+      #           // Add Robot Tests summary of test results
+      #           robotResultsList = ${{ steps.step1.outputs.robotResults }};
+      #           robotResultFactSet = [{ title: "Robot Results"}];
+      #           for (const result of robotResultsList) {
+      #               const parsedResult = JSON.parse(result);
+      #               team = parsedResult.team;
+      #               passed = parsedResult.passed;
+      #               failed = parsedResult.failed;
+      #               total = passed + failed;
+      #               value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
+      #               robotResultFactSet.push({ title: team, value: value});
+      #           }
 
-                bodyItems.push({
-                    type: "Container",
-                    separator: true,
-                    items: [
-                        {
-                            type: "TextBlock",
-                            text: "Test Summary",
-                            weight: "bolder",
-                            size: "medium"
-                        },
-                        {
-                            type: "FactSet",
-                            separator: true,
-                            facts: [
-                                // Datadog results
-                                { title: "Datadog Results", value: datadogResult }
-                            ]
-                        },
-                        {
-                            type: "FactSet",
-                            separator: true,
-                            spacing: "Large",
-                            // Robot results
-                            facts: robotResultFactSet
-                        }
-                    ]
-                });
-            }
+      #           bodyItems.push({
+      #               type: "Container",
+      #               separator: true,
+      #               items: [
+      #                   {
+      #                       type: "TextBlock",
+      #                       text: "Test Summary",
+      #                       weight: "bolder",
+      #                       size: "medium"
+      #                   },
+      #                   {
+      #                       type: "FactSet",
+      #                       separator: true,
+      #                       facts: [
+      #                           // Datadog results
+      #                           { title: "Datadog Results", value: datadogResult }
+      #                       ]
+      #                   },
+      #                   {
+      #                       type: "FactSet",
+      #                       separator: true,
+      #                       spacing: "Large",
+      #                       // Robot results
+      #                       facts: robotResultFactSet
+      #                   }
+      #               ]
+      #           });
+      #       }
 
-            // Add merge conflict warning if applicable
-            if (hasConflicts) {
-                bodyItems.push({
-                    type: "TextBlock",
-                    text: "⚠️ This PR also has **merge conflicts** and was closed. Affected services will be picked up by the next release train run.",
-                    wrap: true,
-                    separator: true,
-                    color: "attention"
-                });
-            }
+      #       // Add merge conflict warning if applicable
+      #       if (hasConflicts) {
+      #           bodyItems.push({
+      #               type: "TextBlock",
+      #               text: "⚠️ This PR also has **merge conflicts** and was closed. Affected services will be picked up by the next release train run.",
+      #               wrap: true,
+      #               separator: true,
+      #               color: "attention"
+      #           });
+      #       }
 
-            // Build actions array - only include Datadog link if we have a batch URL
-            const robotResultsUrl = 'https://www.google.com';
-            const actions = [];
-            if (batchUrl) {
-                actions.push({
-                    type: "Action.OpenUrl",
-                    title: "View Synthetic Test Results",
-                    url: "https://www.google.com"
-                });
-            }
+      #       // Build actions array - only include Datadog link if we have a batch URL
+      #       const robotResultsUrl = 'https://www.google.com';
+      #       const actions = [];
+      #       if (batchUrl) {
+      #           actions.push({
+      #               type: "Action.OpenUrl",
+      #               title: "View Synthetic Test Results",
+      #               url: "https://www.google.com"
+      #           });
+      #       }
 
-            actions.push({
-                type: "Action.OpenUrl",
-                title: "View Release Train PR",
-                url: "https://www.google.com"
-            });
+      #       actions.push({
+      #           type: "Action.OpenUrl",
+      #           title: "View Release Train PR",
+      #           url: "https://www.google.com"
+      #       });
 
-            actions.push({
-                type: "Action.OpenUrl",
-                title: "Github Action Run",
-                url: "https://www.google.com"
-            });
+      #       actions.push({
+      #           type: "Action.OpenUrl",
+      #           title: "Github Action Run",
+      #           url: "https://www.google.com"
+      #       });
 
-            if (robotResultsUrl && robotResultsUrl !== "") {
-              actions.push({
-                  type: "Action.OpenUrl",
-                  title: `View Robot Results`,
-                  url: "https://www.google.com"
-              });
-            }
+      #       if (robotResultsUrl && robotResultsUrl !== "") {
+      #         actions.push({
+      #             type: "Action.OpenUrl",
+      #             title: `View Robot Results`,
+      #             url: "https://www.google.com"
+      #         });
+      #       }
 
-            // Build the complete card
-            const card = {
-                type: "message",
-                attachments: [
-                    {
-                        contentType: "application/vnd.microsoft.card.adaptive",
-                        content: {
-                            $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
-                            type: "AdaptiveCard",
-                            version: "1.4",
-                            body: bodyItems,
-                            actions: actions
-                        }
-                    }
-                ]
-            };
+      #       // Build the complete card
+      #       const card = {
+      #           type: "message",
+      #           attachments: [
+      #               {
+      #                   contentType: "application/vnd.microsoft.card.adaptive",
+      #                   content: {
+      #                       $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
+      #                       type: "AdaptiveCard",
+      #                       version: "1.4",
+      #                       body: bodyItems,
+      #                       actions: actions
+      #                   }
+      #               }
+      #           ]
+      #       };
 
-            // Output the card as a JSON string
-            console.log(JSON.stringify(card));
+      #       // Output the card as a JSON string
+      #       console.log(JSON.stringify(card));

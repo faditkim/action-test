@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Rebot 7.4.1 (Python 3.14.3 on darwin)" generated="2026-05-04T11:52:53.114851" rpa="false" schemaversion="5">
+<statistics>
+<tag>
+<stat pass="1" fail="0" skip="0">buy-an-001</stat>
+<stat pass="1" fail="0" skip="0">buy-an-002</stat>
+<stat pass="1" fail="0" skip="0">buy-at-001</stat>
+<stat pass="1" fail="0" skip="0">buy-de-001</stat>
+<stat pass="1" fail="0" skip="0">buy-de-002</stat>
+<stat pass="1" fail="0" skip="0">buy-de-003</stat>
+<stat pass="1" fail="0" skip="0">buy-de-004</stat>
+<stat pass="1" fail="0" skip="0">buy-de-005</stat>
+<stat pass="1" fail="0" skip="0">buy-de-006</stat>
+<stat pass="1" fail="0" skip="0">buy-nl-001</stat>
+<stat pass="1" fail="0" skip="0">buy-pl-001</stat>
+<stat pass="1" fail="0" skip="0">buy-pl-002</stat>
+<stat pass="12" fail="0" skip="0">qa-bugs-team-buyfulfill</stat>
+<stat pass="2" fail="0" skip="0">suite:anson-staging</stat>
+<stat pass="1" fail="0" skip="0">suite:at-staging</stat>
+<stat pass="6" fail="0" skip="0">suite:de-staging</stat>
+<stat pass="3" fail="0" skip="0">suite:find-exported-product-from-pim</stat>
+<stat pass="1" fail="0" skip="0">suite:nl-checkout</stat>
+<stat pass="2" fail="0" skip="0">suite:pl-staging</stat>
+<stat pass="12" fail="0" skip="0">team:buyfulfill</stat>
+<stat pass="3" fail="0" skip="0">team:welcome</stat>
+<stat pass="1" fail="0" skip="0">welcome-000</stat>
+<stat pass="1" fail="0" skip="0">welcome-001</stat>
+<stat pass="1" fail="0" skip="0">welcome-002</stat>
+<stat pass="12" fail="0" skip="0">xray-qa-buyfulfill-staging</stat>
+<stat pass="15" fail="0" skip="0">xray-qa-tests</stat>
+<stat pass="3" fail="0" skip="0">xray-qa-welcome</stat>
+</tag>
+</statistics>
+</robot>
