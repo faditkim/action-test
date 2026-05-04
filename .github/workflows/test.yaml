@@ -13,12 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set robot results
-        id: step1
+        id: robot-summary
         run: |
           echo "robotResults=['{\"team\": \"buyfulfill\", \"passed\": 12, \"failed\": 0}', '{\"team\": \"welcome\", \"passed\": 3, \"failed\": 0}']" >> $GITHUB_OUTPUT
       - name: Use robot results
         run: |
-          echo "${{ steps.step1.outputs.robotResults }}"
+          echo "${{ steps.robot-summary.outputs.robotResults }}"
 
       - name: Build AdaptiveCard payload for Teams
         id: build-card
