@@ -235,7 +235,7 @@ jobs:
                                         type: "mention",
                                         text: "<at>buy</at>",
                                         mentioned: {
-                                            id: msteamsTagBuy,
+                                            id: `${msteamsTagBuy}`,
                                             name: "buy",
                                             type: "tag"
                                         }
@@ -244,7 +244,7 @@ jobs:
                                         type: "mention",
                                         text: "<at>mac</at>",
                                         mentioned: {
-                                            id: msteamsTagMac,
+                                            id: `${msteamsTagMac}`,
                                             name: "mac",
                                             type: "tag"
                                         }
@@ -253,7 +253,7 @@ jobs:
                                         type: "mention",
                                         text: "<at>qa</at>",
                                         mentioned: {
-                                            id: msteamsTagQA,
+                                            id: `${msteamsTagQA}`,
                                             name: "qa"
                                             type: "tag"
                                         }
@@ -262,7 +262,7 @@ jobs:
                                         type: "mention",
                                         text: "<at>welcome</at>",
                                         mentioned: {
-                                            id: msteamsTagWelcome,
+                                            id: `${msteamsTagWelcome}`,
                                             name: "welcome",
                                             type: "tag"
                                         }
