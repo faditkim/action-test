@@ -3,7 +3,7 @@
 <statistics>
 <tag>
 <stat pass="12" fail="0" skip="0">team:buyfulfill</stat>
-<stat pass="3" fail="0" skip="0">team:welcome</stat>
+<stat pass="2" fail="1" skip="0">team:welcome</stat>
 <stat pass="12" fail="0" skip="0">xray-qa-buyfulfill-staging</stat>
 <stat pass="15" fail="0" skip="0">xray-qa-tests</stat>
 <stat pass="3" fail="0" skip="0">xray-qa-welcome</stat>

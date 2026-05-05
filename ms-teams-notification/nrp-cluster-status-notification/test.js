@@ -76,9 +76,8 @@ if (noTestsRan) {
         failed = parsedResult.failed;
         total = passed + failed;
         value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
-        if (failed > 0) {
-            team = team === 'buyfulfill' ? `<at>buy</at>` : `<at>${team}</at>`;
-        }
+        team = (team === 'buyfulfill') ? 'buy' : team;
+        team = (failed > 0) ? `<at>${team}</at>` : team;
         robotResultFactSet.push({ title: team, value: value});
     }
 
