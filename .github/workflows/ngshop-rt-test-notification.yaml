@@ -255,7 +255,7 @@ jobs:
                                         text: "<at>qa</at>",
                                         mentioned: {
                                             id: msteamsTagQA,
-                                            name: "qa"
+                                            name: "qa",
                                             type: "tag"
                                         }
                                     },
