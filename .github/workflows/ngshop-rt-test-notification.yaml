@@ -1,9 +1,6 @@
 name: Test for NGSHOP Release Train Notifications
 
 on:
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
 
 jobs:
@@ -15,7 +12,7 @@ jobs:
       - name: Copy XML
         run: |
           mkdir -p results
-          cp output.xml results/output.xml
+          cp ms-teams-notification/nrp-cluster-status-notification/output.xml results/output.xml
       - name: Parse Robot Framework results
         id: robot-summary
         if: always()
