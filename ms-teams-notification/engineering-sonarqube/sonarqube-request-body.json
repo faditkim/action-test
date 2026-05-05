@@ -1,0 +1,484 @@
+{
+    "type": "message",
+    "attachments": [
+        {
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content": {
+                "type": "AdaptiveCard",
+                "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.5",
+                "msteams": {
+                    "width": "full",
+                    "entities": [
+                        {
+                            "type": "mention",
+                            "text": "<at>Buy/Fulfill</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "Buy/Fulfill",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>CashDesk</at>",
+                            "mentioned": {
+                                "id": "OGRjNGQxYmMtNGI5Ni00YzQ1LWFkYTQtMTY5M2RmOTg0MGExIyNkM2I4Njk2Ny00MTYwLTQ5NDQtYTM2Zi1jNWRhOWIyMTZmMjMjI3RWRTB4YWM1Ylg=",
+                                "name": "CashDesk",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>Backoffice</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "Backoffice",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>Flex</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "Flex",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>APP</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "APP",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>Pickliste</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "Pickliste",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>Welcome</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "Welcome",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>sre</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "sre",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>ce</at>",
+                            "mentioned": {
+                                "id": "",
+                                "name": "ce",
+                                "type": "tag"
+                            }
+                        }
+                    ]
+                },
+                "body": [
+                    {
+                        "type": "TextBlock",
+                        "text": "SonarQube: Projects with broken quality rules",
+                        "weight": "Bolder",
+                        "size": "Medium",
+                        "color": "Accent",
+                        "wrap": true
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Projects with broken quality rules: total=19",
+                        "weight": "Default",
+                        "size": "Small",
+                        "color": "Default",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *Buy/Fulfill*"
+                                    },
+                                    {
+                                        "title": "- buy-buy-app",
+                                        "value": "security_review_rating=3.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- fulfill-fulfill-lib",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>Buy/Fulfill</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *Cashdesk/Backoffice*"
+                                    },
+                                    {
+                                        "title": "- pos-articles",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- pos-authorization-service",
+                                        "value": "security_rating=4.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- pos-bo-backend",
+                                        "value": "reliability_rating=5.0 (> 4.0)"
+                                    },
+                                    {
+                                        "title": "- pos-code2object",
+                                        "value": "security_rating=4.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- pos-crm-proxy",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- pos-redprice-checker",
+                                        "value": "security_rating=5.0 (expected 1.0) / security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>CashDesk</at>, <at>Backoffice</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *Flex*"
+                                    },
+                                    {
+                                        "title": "- flex-kassendifferenzen-backend",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>Flex</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *MobileApp*"
+                                    },
+                                    {
+                                        "title": "- mobileapp-ngshop-mobile",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>APP</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *Pickliste*"
+                                    },
+                                    {
+                                        "title": "- pickliste-pickliste",
+                                        "value": "security_rating=5.0 (expected 1.0) / security_review_rating=5.0 (expected 1.0) / reliability_rating=5.0 (> 4.0)"
+                                    },
+                                    {
+                                        "title": "- pickliste-pickliste-file-service",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- pickliste-pickliste-image-service",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- pickliste-pickliste-mde-apps",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>Pickliste</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *Welcome*"
+                                    },
+                                    {
+                                        "title": "- search-search-lib",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>Welcome</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *SRE*"
+                                    },
+                                    {
+                                        "title": "- schneiderflow-ui",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>sre</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *CE*"
+                                    },
+                                    {
+                                        "title": "- cre-tf-gcp-bootstrap",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "- cre-tf-gcp-shared-autopilot",
+                                        "value": "security_rating=3.0 (expected 1.0) / security_review_rating=4.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": "<at>ce</at>"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "❌ Team",
+                                        "value": " *Undefined*"
+                                    },
+                                    {
+                                        "title": "- connect-salesforce",
+                                        "value": "security_review_rating=5.0 (expected 1.0)"
+                                    },
+                                    {
+                                        "title": "Contact Person",
+                                        "value": ""
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": true
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "✅ Team",
+                                        "value": "*CDM*"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": false
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "✅ Team",
+                                        "value": "*Evaluate/PDA*"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": false
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "✅ Team",
+                                        "value": "*MAC*"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": false
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "✅ Team",
+                                        "value": "*Omnichannel*"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": false
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "✅ Team",
+                                        "value": "*ProLoytion*"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": false
+                    },
+                    {
+                        "type": "Container",
+                        "items": [
+                            {
+                                "type": "FactSet",
+                                "facts": [
+                                    {
+                                        "title": "✅ Team",
+                                        "value": "*QA*"
+                                    }
+                                ],
+                                "spacing": "Small"
+                            }
+                        ],
+                        "spacing": "Medium",
+                        "showBorder": false
+                    }
+                ]
+            }
+        }
+    ]
+}

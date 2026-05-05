@@ -1,0 +1,153 @@
+{
+    "type": "message",
+    "attachments": [
+        {
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.4",
+                "body": [
+                    {
+                        "type": "Container",
+                        "style": "attention",
+                        "items": [
+                            {
+                                "type": "ColumnSet",
+                                "columns": [
+                                    {
+                                        "type": "Column",
+                                        "width": "auto",
+                                        "items": [
+                                            {
+                                                "type": "Image",
+                                                "url": "https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png",
+                                                "size": "small"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Column",
+                                        "width": "stretch",
+                                        "items": [
+                                            {
+                                                "type": "TextBlock",
+                                                "text": "🚂 Release train from dev to stg failed!",
+                                                "weight": "bolder",
+                                                "size": "large",
+                                                "wrap": true
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Container",
+                        "separator": true,
+                        "items": [
+                            {
+                                "type": "TextBlock",
+                                "text": "Test Summary",
+                                "weight": "bolder",
+                                "size": "medium"
+                            },
+                            {
+                                "type": "FactSet",
+                                "separator": true,
+                                "facts": [
+                                    {
+                                        "title": "Datadog Results",
+                                        "value": "📊 Total: 15 \n✅ Passed: 1 \n❌ Failed: 2 \n⚠️ Failed (Non-blocking): 3 \n ♻️ Previously Passed: 4 \n⏱️ Timed Out: 5"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "FactSet",
+                                "separator": true,
+                                "spacing": "Large",
+                                "facts": [
+                                    {
+                                        "title": "Robot Results"
+                                    },
+                                    {
+                                        "title": "buyfulfill",
+                                        "value": "📊 Total: 12 ✅ Passed: 12 ❌ Failed: 0"
+                                    },
+                                    {
+                                        "title": "welcome",
+                                        "value": "📊 Total: 3 ✅ Passed: 3 ❌ Failed: 0"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "actions": [
+                    {
+                        "type": "Action.OpenUrl",
+                        "title": "View Synthetic Test Results",
+                        "url": "https://www.google.com"
+                    },
+                    {
+                        "type": "Action.OpenUrl",
+                        "title": "View Release Train PR",
+                        "url": "https://www.google.com"
+                    },
+                    {
+                        "type": "Action.OpenUrl",
+                        "title": "Github Action Run",
+                        "url": "https://www.google.com"
+                    },
+                    {
+                        "type": "Action.OpenUrl",
+                        "title": "View Robot Results",
+                        "url": "https://www.google.com"
+                    }
+                ],
+                "msteams": {
+                    "width": "Full",
+                    "entities": [
+                        {
+                            "type": "mention",
+                            "text": "<at>buy</at>",
+                            "mentioned": {
+                                "id": "***",
+                                "name": "buy",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>mac</at>",
+                            "mentioned": {
+                                "id": "***",
+                                "name": "mac",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>qa</at>",
+                            "mentioned": {
+                                "id": "***",
+                                "name": "qa",
+                                "type": "tag"
+                            }
+                        },
+                        {
+                            "type": "mention",
+                            "text": "<at>welcome</at>",
+                            "mentioned": {
+                                "id": "***",
+                                "name": "welcome",
+                                "type": "tag"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
