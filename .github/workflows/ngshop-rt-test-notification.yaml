@@ -233,7 +233,6 @@ jobs:
                             body: bodyItems,
                             actions: actions,
                             msteams: {
-                                width: "Full",
                                 entities: [
                                     {
                                         type: "mention",
