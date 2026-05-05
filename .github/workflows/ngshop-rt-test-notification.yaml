@@ -137,7 +137,10 @@ jobs:
                     value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
                     // Mention team if failed
                     team = (team === 'buyfulfill') ? 'buy' : team;
-                    team = (failed > 0) ? `<at>${team}</at>` : team;
+                    if (failed > 0) {
+                        team = `<at>${team}</at>`;
+                        robotResultFactSet[0].value = "<at>qa</at>";
+                    }
                     robotResultFactSet.push({ title: team, value: value});
                 }
 

@@ -77,7 +77,10 @@ if (noTestsRan) {
         total = passed + failed;
         value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
         team = (team === 'buyfulfill') ? 'buy' : team;
-        team = (failed > 0) ? `<at>${team}</at>` : team;
+        if (failed > 0) {
+            team = `<at>${team}</at>`;
+            robotResultFactSet[0].value = "<at>qa</at>";
+        }
         robotResultFactSet.push({ title: team, value: value});
     }
 
@@ -215,9 +218,8 @@ const card = {
 };
 
 // Output the card as a JSON string
-console.log(JSON.stringify(card));
-
+console.log(JSON.stringify(card, null, 4));
 const fs = require('fs');
-fs.writeFileSync('ms-teams-notification/nrp-cluster-status-notification/result.json', JSON.stringify(card));
+fs.writeFileSync('ms-teams-notification/nrp-cluster-status-notification/result.json', JSON.stringify(card, null, space=4));
 
 // core.setOutput('card_payload', JSON.stringify(card));

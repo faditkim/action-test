@@ -69,15 +69,16 @@
                                 "spacing": "Large",
                                 "facts": [
                                     {
-                                        "title": "Robot Results"
+                                        "title": "Robot Results",
+                                        "value": "<at>qa</at>"
                                     },
                                     {
-                                        "title": "buyfulfill",
-                                        "value": "📊 Total: 12 ✅ Passed: 12 ❌ Failed: 0"
+                                        "title": "<at>buy</at>",
+                                        "value": "📊 Total: 13 ✅ Passed: 12 ❌ Failed: 1"
                                     },
                                     {
-                                        "title": "welcome",
-                                        "value": "📊 Total: 3 ✅ Passed: 3 ❌ Failed: 0"
+                                        "title": "<at>welcome</at>",
+                                        "value": "📊 Total: 4 ✅ Passed: 3 ❌ Failed: 1"
                                     }
                                 ]
                             }
@@ -107,13 +108,12 @@
                     }
                 ],
                 "msteams": {
-                    "width": "Full",
                     "entities": [
                         {
                             "type": "mention",
                             "text": "<at>buy</at>",
                             "mentioned": {
-                                "id": "***",
+                                "id": "asdf",
                                 "name": "buy",
                                 "type": "tag"
                             }
@@ -122,7 +122,7 @@
                             "type": "mention",
                             "text": "<at>mac</at>",
                             "mentioned": {
-                                "id": "***",
+                                "id": "asdf",
                                 "name": "mac",
                                 "type": "tag"
                             }
@@ -131,7 +131,7 @@
                             "type": "mention",
                             "text": "<at>qa</at>",
                             "mentioned": {
-                                "id": "***",
+                                "id": "asdf",
                                 "name": "qa",
                                 "type": "tag"
                             }
@@ -140,7 +140,7 @@
                             "type": "mention",
                             "text": "<at>welcome</at>",
                             "mentioned": {
-                                "id": "***",
+                                "id": "asdf",
                                 "name": "welcome",
                                 "type": "tag"
                             }
