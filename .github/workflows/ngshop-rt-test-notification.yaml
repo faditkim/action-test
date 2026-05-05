@@ -70,6 +70,10 @@ jobs:
             const destEnv = 'stg';
             const hasConflicts = false;
             const robotResults = ${{ steps.robot-summary.outputs.robotResults }};
+            const msteamsTagBuy: '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}'
+            const msteamsTagMac: '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}'
+            const msteamsTagQA: '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}'
+            const msteamsTagWelcome: '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}'
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
@@ -223,7 +227,44 @@ jobs:
                             type: "AdaptiveCard",
                             version: "1.4",
                             body: bodyItems,
-                            actions: actions
+                            actions: actions,
+                            msteams: {
+                                width: "Full",
+                                entities: [
+                                    {
+                                        type: "tag",
+                                        text: "<at>buy</at>",
+                                        mentioned: {
+                                            id: msteamsTagBuy,
+                                            name: "buy"
+                                        }
+                                    },
+                                    {
+                                        type: "tag",
+                                        text: "<at>welcome</at>",
+                                        mentioned: {
+                                            id: msteamsTagWelcome,
+                                            name: "welcome"
+                                        }
+                                    },
+                                    {
+                                        type: "tag",
+                                        text: "<at>mac</at>",
+                                        mentioned: {
+                                            id: msteamsTagMac,
+                                            name: "mac"
+                                        }
+                                    },
+                                    {
+                                        type: "tag",
+                                        text: "<at>qa</at>",
+                                        mentioned: {
+                                            id: msteamsTagQA,
+                                            name: "qa"
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     }
                 ]
