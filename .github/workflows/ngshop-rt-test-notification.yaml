@@ -138,6 +138,9 @@ jobs:
                     failed = parsedResult.failed;
                     total = passed + failed;
                     value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
+                    if (failed > 0) {
+                        team = team === 'buyfulfill' ? `<at>buy</at>` : `<at>${team}</at>`;
+                    }
                     robotResultFactSet.push({ title: team, value: value});
                 }
 
@@ -277,7 +280,7 @@ jobs:
 
             // Output the card as a JSON string
             console.log(JSON.stringify(card));
-            // core.setOutput('card_payload', JSON.stringify(card));
+            core.setOutput('card_payload', JSON.stringify(card));
 
       # - name: Send notification to MS Teams
       #   uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
