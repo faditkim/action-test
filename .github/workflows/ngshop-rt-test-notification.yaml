@@ -57,7 +57,7 @@ jobs:
                           total = passed + failed
                           if failed > 0:
                             isRobotSuccess = "false"
-                            print(f"Test fails in team: {team}. Set output "isRobotSuccess" to {isRobotSuccess}")
+                            print(f"Test fails in team: {team}. Set output \"isRobotSuccess\" to {isRobotSuccess}")
 
                           print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
                           robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
