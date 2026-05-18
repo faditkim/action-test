@@ -53,7 +53,7 @@ jobs:
                           passed = int(tag.attrib['pass'])
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
-                          totlaFailed += failed
+                          totalFailed += failed
                           print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
                           robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
               with open(os.environ["GITHUB_OUTPUT"], "a") as f:
