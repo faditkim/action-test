@@ -19,7 +19,6 @@ jobs:
 
       - name: Run Robot Framework tests
         id: run_robot_test
-        continue-on-error: true
         run: |
           python - << 'EOF'
             a = 1/0
