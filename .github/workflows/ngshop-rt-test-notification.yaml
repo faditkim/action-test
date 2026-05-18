@@ -55,6 +55,7 @@ jobs:
                           total = passed + failed
                           totalFailed += failed
                           print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
+                          print(f"totalFailed / {totalFailed}")
                           robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
               with open(os.environ["GITHUB_OUTPUT"], "a") as f:
                   f.write(f"robotResults={robotResults}\n")
