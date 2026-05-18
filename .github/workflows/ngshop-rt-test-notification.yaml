@@ -12,7 +12,7 @@ jobs:
     outputs:
       test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
       robotResults: ${{ steps.robot-summary.outputs.robotResults }}
-      robotFailed: ${{ steps.robot-summary.outputs.robotFailed }}
+      isRobotSuccess: ${{ steps.robot-summary.outputs.isRobotSuccess }}
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -36,7 +36,7 @@ jobs:
           import json
 
           passed = failed = total = 0
-          robotFailed = "false"
+          isRobotSuccess = "true"
           teams = ['buyfulfill', 'welcome']
           robotResults = []
 
@@ -56,14 +56,14 @@ jobs:
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
                           if failed > 0:
-                            robotFailed = "true"
-                            print(f"Test fails in team: {team}. Set robotFailed to {robotFailed}")
+                            isRobotSuccess = "false"
+                            print(f"Test fails in team: {team}. Set output "isRobotSuccess" to {isRobotSuccess}")
 
                           print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
                           robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
               with open(os.environ["GITHUB_OUTPUT"], "a") as f:
                   f.write(f"robotResults={robotResults}\n")
-                  f.write(f"robotFailed={robotFailed}\n")
+                  f.write(f"isRobotSuccess={isRobotSuccess}\n")
                   
           EOF
 
@@ -75,7 +75,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Build AdaptiveCard payload for Teams
-        if: ${{ needs.robot-tests.outputs.robotFailed == 'true'}}
+        if: ${{ needs.robot-tests.outputs.isRobotSuccess == 'false'}}
         id: build-card
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
@@ -100,7 +100,7 @@ jobs:
             const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
             const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
             const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
-            const robotFailed = '${{ needs.robot-tests.outputs.robotFailed }}';
+            const isRobotSuccess = '${{ needs.robot-tests.outputs.isRobotSuccess }}';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
