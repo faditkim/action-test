@@ -1,13 +1,23 @@
 const batchUrl = 'https://www.google.com';
-const passedCount = '1';
-const failedCount = '2';
-const failedNonBlockingCount = '3';
-const previouslyPassedCount = '4';
-const timedOutCount = '5';
+const passedCount = '11';
+const failedCount = '1';
+const failedNonBlockingCount = '0';
+const previouslyPassedCount = '0';
+const timedOutCount = '0';
 const sourceEnv = 'dev';
 const destEnv = 'stg';
 const hasConflicts = false;
-const robotResults = ['{"team": "buyfulfill", "passed": 12, "failed": 1}', '{"team": "welcome", "passed": 3, "failed": 1}'];
+// const robotResults = ['{"team": "buyfulfill", "passed": 12, "failed": 1}', '{"team": "welcome", "passed": 3, "failed": 1}'];
+// const robotResults = ['{"team": "buyfulfill", "passed": 12, "failed": 1}', '{"team": "welcome", "passed": 3, "failed": 0}'];
+const robotResults = ['{"team": "buyfulfill", "passed": 13, "failed": 0}'];
+const buyLogUrl = 'https://www.buy.com';
+const welcomeLogUrl = 'https://www.welcome.com';
+const macLogUrl = ''; // tbd
+const msteams_entities = [];
+const msteamsTagBuy = '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}';
+const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
+const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
+const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
 
 // Determine overall status
 // Use || 0 to handle empty strings and NaN values when steps are skipped
@@ -66,8 +76,8 @@ if (noTestsRan) {
     datadogResult = `📊 Total: ${totalTests} \n✅ Passed: ${passedCount} \n❌ Failed: ${failedCount} \n`;
     datadogResult += `⚠️ Failed (Non-blocking): ${failedNonBlockingCount} \n ♻️ Previously Passed: ${previouslyPassedCount} \n`;
     datadogResult += `⏱️ Timed Out: ${timedOutCount}`;
-    // Add Robot Tests summary of test results
     
+    // Add Robot Tests summary of test results
     robotResultFactSet = [{ title: "Robot Results"}];
     for (const result of robotResults) {
         const parsedResult = JSON.parse(result);
@@ -77,11 +87,36 @@ if (noTestsRan) {
         total = passed + failed;
         value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
         team = (team === 'buyfulfill') ? 'buy' : team;
+        // preparation for mention if test failed.
         if (failed > 0) {
+            mentioned_id = (team === 'buy') ? msteamsTagBuy : ((team === 'welcome') ? msteamsTagWelcome : msteamsTagMac);
+            msteams_entities.push({
+                type: "mention",
+                text: `<at>${team}</at>`,
+                mentioned: {
+                    id: mentioned_id,
+                    name: team,
+                    type: "tag"
+                }
+            });
+            logUrl = (team === 'buy') ? buyLogUrl : ((team === 'welcome') ? welcomeLogUrl : macLogUrl);
             team = `<at>${team}</at>`;
             robotResultFactSet[0].value = "<at>qa</at>";
+            value = `📊 Total: ${total} ✅ Passed: ${passed} [❌ Failed: ${failed}](${logUrl})`;
         }
         robotResultFactSet.push({ title: team, value: value});
+    }
+    // add qa mention if any test failed to notify qa team
+    if (msteams_entities.length > 0) {
+        msteams_entities.push({
+            type: "mention",
+            text: "<at>qa</at>",
+            mentioned: {
+                id: msteamsTagQA,
+                name: "qa",
+                type: "tag"
+            }
+        });
     }
 
     bodyItems.push({
@@ -96,7 +131,6 @@ if (noTestsRan) {
             },
             {
                 type: "FactSet",
-                separator: true,
                 facts: [
                     // Datadog results
                     { title: "Datadog Results", value: datadogResult }
@@ -104,7 +138,6 @@ if (noTestsRan) {
             },
             {
                 type: "FactSet",
-                separator: true,
                 spacing: "Large",
                 // Robot results
                 facts: robotResultFactSet
@@ -125,40 +158,25 @@ if (hasConflicts) {
 }
 
 // Build actions array - only include Datadog link if we have a batch URL
-const robotResultsUrl = 'https://www.google.com';
 const actions = [];
 if (batchUrl) {
     actions.push({
         type: "Action.OpenUrl",
         title: "View Synthetic Test Results",
-        url: "https://www.google.com"
+        url: "htts://www.google.com"
     });
 }
-
 actions.push({
     type: "Action.OpenUrl",
     title: "View Release Train PR",
-    url: "https://www.google.com"
+    url: "htts://www.google.com"
 });
 
 actions.push({
     type: "Action.OpenUrl",
     title: "Github Action Run",
-    url: "https://www.google.com"
+    url: "htts://www.google.com"
 });
-
-if (robotResultsUrl && robotResultsUrl !== "") {
-    actions.push({
-        type: "Action.OpenUrl",
-        title: `View Robot Results`,
-        url: "https://www.google.com"
-    });
-}
-
-const msteamsTagBuy = 'asdf';
-const msteamsTagMac = 'asdf';
-const msteamsTagQA = 'asdf';
-const msteamsTagWelcome = 'asdf';
 
 // Build the complete card
 const card = {
@@ -170,48 +188,11 @@ const card = {
                 $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
                 type: "AdaptiveCard",
                 version: "1.4",
-                body: bodyItems,
-                actions: actions,
                 msteams: {
-                    entities: [
-                        {
-                            type: "mention",
-                            text: "<at>buy</at>",
-                            mentioned: {
-                                id: msteamsTagBuy,
-                                name: "buy",
-                                type: "tag"
-                            }
-                        },
-                        {
-                            type: "mention",
-                            text: "<at>mac</at>",
-                            mentioned: {
-                                id: msteamsTagMac,
-                                name: "mac",
-                                type: "tag"
-                            }
-                        },
-                        {
-                            type: "mention",
-                            text: "<at>qa</at>",
-                            mentioned: {
-                                id: msteamsTagQA,
-                                name: "qa",
-                                type: "tag"
-                            }
-                        },
-                        {
-                            type: "mention",
-                            text: "<at>welcome</at>",
-                            mentioned: {
-                                id: msteamsTagWelcome,
-                                name: "welcome",
-                                type: "tag"
-                            }
-                        }
-                    ]
-                }
+                    entities: msteams_entities
+                },
+                body: bodyItems,
+                actions: actions
             }
         }
     ]
@@ -219,6 +200,7 @@ const card = {
 
 // Output the card as a JSON string
 console.log(JSON.stringify(card, null, 4));
+const { log } = require('console');
 const fs = require('fs');
 fs.writeFileSync('ms-teams-notification/nrp-cluster-status-notification/result.json', JSON.stringify(card, null, space=4));
 

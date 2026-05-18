@@ -1,18 +1,29 @@
-name: Test for NGSHOP Release Train Notifications
+name: Release Train Tests
 
 on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  robot-tests:
+    runs-on: fadi-runner
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
+      robotResults: ${{ steps.robot-summary.outputs.robotResults }}
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Copy XML
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run Robot Framework tests
+        id: run_robot_test
+        continue-on-error: true
         run: |
-          mkdir -p results
-          cp ms-teams-notification/nrp-cluster-status-notification/output.xml results/output.xml
+          python - << 'EOF'
+            a = 1/0
+          EOF
+
       - name: Parse Robot Framework results
         id: robot-summary
         if: always()
@@ -24,7 +35,7 @@ jobs:
           import json
 
           passed = failed = total = 0
-          teams = ['buyfulfill', 'welcome']
+          teams = ['buyfulfill']
           robotResults = []
 
           files = glob.glob("**/output.xml", recursive=True)
@@ -47,26 +58,40 @@ jobs:
               with open(os.environ["GITHUB_OUTPUT"], "a") as f:
                   f.write(f"robotResults={robotResults}\n")
           EOF
-      - name: Use robot results
-        run: |
-          echo "${{ steps.robot-summary.outputs.robotResults }}"
 
+  finalize:
+    runs-on: ubuntu-latest
+    needs: [robot-tests]
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
       - name: Build AdaptiveCard payload for Teams
+        if: ${{ needs.robot-tests.result == 'failure' || needs.datadog-tests.result == 'failure' }}
         id: build-card
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           # language=javascript
           script: |
             const batchUrl = 'https://www.google.com';
-            const passedCount = '1';
-            const failedCount = '2';
-            const failedNonBlockingCount = '3';
-            const previouslyPassedCount = '4';
-            const timedOutCount = '5';
-            const sourceEnv = 'dev';
-            const destEnv = 'stg';
+            const passedCount = '12';
+            const failedCount = '0';
+            const failedNonBlockingCount = '0';
+            const previouslyPassedCount = '0';
+            const timedOutCount = '0';
+            const sourceEnv = 'development';
+            const destEnv = 'staging';
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
-            const robotResults = ${{ steps.robot-summary.outputs.robotResults }};
+            const robotResults = ${{ needs.robot-tests.outputs.robotResults }}; // array
+            const buyLogUrl = '${{ needs.robot-tests.outputs.test_results_url }}';
+            const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
+            const welcomeLogUrl = '${{ needs.robot-tests.outputs.welcome_results_url }}';
+            const msteams_entities = [];
+            const msteamsTagBuy = '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}';
+            const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
+            const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
+            const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
@@ -125,8 +150,8 @@ jobs:
                 datadogResult = `📊 Total: ${totalTests} \n✅ Passed: ${passedCount} \n❌ Failed: ${failedCount} \n`;
                 datadogResult += `⚠️ Failed (Non-blocking): ${failedNonBlockingCount} \n ♻️ Previously Passed: ${previouslyPassedCount} \n`;
                 datadogResult += `⏱️ Timed Out: ${timedOutCount}`;
-                // Add Robot Tests summary of test results
                 
+                // Add Robot Tests summary of test results
                 robotResultFactSet = [{ title: "Robot Results"}];
                 for (const result of robotResults) {
                     const parsedResult = JSON.parse(result);
@@ -135,13 +160,37 @@ jobs:
                     failed = parsedResult.failed;
                     total = passed + failed;
                     value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
-                    // Mention team if failed
                     team = (team === 'buyfulfill') ? 'buy' : team;
+                    // preparation for mention if test failed.
                     if (failed > 0) {
+                        mentioned_id = (team === 'buy') ? msteamsTagBuy : ((team === 'welcome') ? msteamsTagWelcome : msteamsTagMac);
+                        msteams_entities.push({
+                            type: "mention",
+                            text: `<at>${team}</at>`,
+                            mentioned: {
+                                id: mentioned_id,
+                                name: team,
+                                type: "tag"
+                            }
+                        });
+                        logUrl = (team === 'buy') ? buyLogUrl : ((team === 'welcome') ? welcomeLogUrl : macLogUrl);
                         team = `<at>${team}</at>`;
                         robotResultFactSet[0].value = "<at>qa</at>";
+                        value = `📊 Total: ${total} ✅ Passed: ${passed} [❌ Failed: ${failed}](${logUrl})`;
                     }
                     robotResultFactSet.push({ title: team, value: value});
+                }
+                // add qa mention if any test failed to notify qa team
+                if (msteams_entities.length > 0) {
+                    msteams_entities.push({
+                        type: "mention",
+                        text: "<at>qa</at>",
+                        mentioned: {
+                            id: msteamsTagQA,
+                            name: "qa",
+                            type: "tag"
+                        }
+                    });
                 }
 
                 bodyItems.push({
@@ -156,7 +205,6 @@ jobs:
                         },
                         {
                             type: "FactSet",
-                            separator: true,
                             facts: [
                                 // Datadog results
                                 { title: "Datadog Results", value: datadogResult }
@@ -164,7 +212,6 @@ jobs:
                         },
                         {
                             type: "FactSet",
-                            separator: true,
                             spacing: "Large",
                             // Robot results
                             facts: robotResultFactSet
@@ -185,40 +232,27 @@ jobs:
             }
 
             // Build actions array - only include Datadog link if we have a batch URL
-            const robotResultsUrl = 'https://www.google.com';
             const actions = [];
             if (batchUrl) {
                 actions.push({
                     type: "Action.OpenUrl",
                     title: "View Synthetic Test Results",
-                    url: "https://www.google.com"
+                    url: batchUrl
                 });
             }
-
+            
+            const prUrl = `https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}`;
             actions.push({
                 type: "Action.OpenUrl",
                 title: "View Release Train PR",
-                url: "https://www.google.com"
+                url: prUrl
             });
-
+            
             actions.push({
                 type: "Action.OpenUrl",
                 title: "Github Action Run",
-                url: "https://www.google.com"
+                url: runUrl
             });
-
-            if (robotResultsUrl && robotResultsUrl !== "") {
-              actions.push({
-                  type: "Action.OpenUrl",
-                  title: `View Robot Results`,
-                  url: "https://www.google.com"
-              });
-            }
-
-            const msteamsTagBuy = '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}';
-            const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
-            const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
-            const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
 
             // Build the complete card
             const card = {
@@ -230,59 +264,16 @@ jobs:
                             $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
                             type: "AdaptiveCard",
                             version: "1.4",
-                            body: bodyItems,
-                            actions: actions,
                             msteams: {
-                                entities: [
-                                    {
-                                        type: "mention",
-                                        text: "<at>buy</at>",
-                                        mentioned: {
-                                            id: msteamsTagBuy,
-                                            name: "buy",
-                                            type: "tag"
-                                        }
-                                    },
-                                    {
-                                        type: "mention",
-                                        text: "<at>mac</at>",
-                                        mentioned: {
-                                            id: msteamsTagMac,
-                                            name: "mac",
-                                            type: "tag"
-                                        }
-                                    },
-                                    {
-                                        type: "mention",
-                                        text: "<at>qa</at>",
-                                        mentioned: {
-                                            id: msteamsTagQA,
-                                            name: "qa",
-                                            type: "tag"
-                                        }
-                                    },
-                                    {
-                                        type: "mention",
-                                        text: "<at>welcome</at>",
-                                        mentioned: {
-                                            id: msteamsTagWelcome,
-                                            name: "welcome",
-                                            type: "tag"
-                                        }
-                                    }
-                                ]
-                            }
+                                entities: msteams_entities
+                            },
+                            body: bodyItems,
+                            actions: actions
                         }
                     }
                 ]
             };
 
             // Output the card as a JSON string
+            core.setOutput('card_payload', JSON.stringify(card));
             console.log(JSON.stringify(card, null, 4));
-            core.setOutput('card_payload', JSON.stringify(card, null, 4));
-
-      # - name: Send notification to MS Teams
-      #   uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
-      #   with:
-      #     webhook_url: https://prod-153.westeurope.logic.azure.com:443/workflows/cbca81d861c24a74963c7fec32bb5582/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=moIDXUsWZN2Ccr9qHLTRWAHAwLbMgK3b5Srwoht_i_Y
-      #     raw: ${{ steps.build-card.outputs.card_payload }}
