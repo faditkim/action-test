@@ -12,13 +12,14 @@ jobs:
     outputs:
       test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
       robotResults: ${{ steps.robot-summary.outputs.robotResults }}
-      totalFailed: ${{ steps.robot-summary.outputs.totalFailed }}
+      robotFailed: ${{ steps.robot-summary.outputs.robotFailed }}
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run Robot Framework tests
         id: run_robot_test
+        continue-on-error: true
         run: |
           python - << 'EOF'
             a = 1/0
@@ -34,7 +35,8 @@ jobs:
           import glob
           import json
 
-          passed = failed = total = totalFailed = 0
+          passed = failed = total = 0
+          robotFailed = "false"
           teams = ['buyfulfill']
           robotResults = []
 
@@ -53,13 +55,15 @@ jobs:
                           passed = int(tag.attrib['pass'])
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
-                          totalFailed += failed
+                          if failed > 0:
+                            robotFailed = "true"
+                            print(f"Test fails in team: {team}. Set robotFailed to {robotFailed}")
+
                           print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
-                          print(f"totalFailed / {totalFailed}")
                           robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
               with open(os.environ["GITHUB_OUTPUT"], "a") as f:
                   f.write(f"robotResults={robotResults}\n")
-                  f.write(f"totalFailed={totalFailed}\n")
+                  f.write(f"robotFailed={robotFailed}\n")
                   
           EOF
 
@@ -71,7 +75,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Build AdaptiveCard payload for Teams
-        # if: ${{ needs.robot-tests.outputs.totalFailed > 0}}
+        if: ${{ needs.robot-tests.outputs.robotFailed == 'true'}}
         id: build-card
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
@@ -96,7 +100,7 @@ jobs:
             const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
             const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
             const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
-            const jobResult = '${{ needs.robot-tests.result }}';
+            const jobResult = '${{ needs.robot-tests.outputs.robotFailed }}';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
