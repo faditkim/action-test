@@ -92,7 +92,7 @@ jobs:
             const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
             const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
             const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
-            const job-result = '${{needs.robot-tests.result}}'
+            const job-result = '${{needs.robot-tests.result}}';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
