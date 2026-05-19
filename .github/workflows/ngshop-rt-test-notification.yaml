@@ -92,9 +92,9 @@ jobs:
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
             const robot_results = ${{ needs.robot-tests.outputs.robot_results }}; // array
-            const buyLogUrl = '${{ needs.robot-tests.outputs.test_results_url }}';
-            const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
-            const welcomeLogUrl = '${{ needs.robot-tests.outputs.welcome_results_url }}';
+            const buyLogUrl = 'https://www.google.com';
+            const macLogUrl = 'https://www.google.com';
+            const welcomeLogUrl = 'https://www.google.com';
             const msteams_entities = [];
             const msteamsTagBuy = '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}';
             const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
