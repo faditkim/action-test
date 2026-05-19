@@ -11,8 +11,8 @@ jobs:
       id-token: write
     outputs:
       test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
-      robotResults: ${{ steps.robot-summary.outputs.robotResults }}
-      isRobotSuccess: ${{ steps.robot-summary.outputs.isRobotSuccess }}
+      robot_results: ${{ steps.robot-summary.outputs.robot_results }}
+      is_robot_success: ${{ steps.robot-summary.outputs.is_robot_success }}
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -36,9 +36,9 @@ jobs:
           import json
 
           passed = failed = total = 0
-          isRobotSuccess = "true"
+          is_robot_success = "true"
           teams = ['buyfulfill', 'welcome']
-          robotResults = []
+          robot_results = []
 
           files = glob.glob("**/output.xml", recursive=True)
           if not files:
@@ -56,14 +56,14 @@ jobs:
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
                           if failed > 0:
-                            isRobotSuccess = "false"
-                            print(f"Test fails in team: {team}. Set output \"isRobotSuccess\" to {isRobotSuccess}")
+                            is_robot_success = "false"
+                            print(f"Test fails in team: {team}. Set output \"is_robot_success\" to {is_robot_success}")
 
                           print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
-                          robotResults.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
+                          robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
               with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-                  f.write(f"robotResults={robotResults}\n")
-                  f.write(f"isRobotSuccess={isRobotSuccess}\n")
+                  f.write(f"robot_results={robot_results}\n")
+                  f.write(f"is_robot_success={is_robot_success}\n")
                   
           EOF
 
@@ -75,7 +75,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Build AdaptiveCard payload for Teams
-        if: ${{ needs.robot-tests.outputs.isRobotSuccess == 'false'}}
+        if: ${{ needs.robot-tests.outputs.is_robot_success == 'false'}}
         id: build-card
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
@@ -91,7 +91,7 @@ jobs:
             const destEnv = 'staging';
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
-            const robotResults = ${{ needs.robot-tests.outputs.robotResults }}; // array
+            const robot_results = ${{ needs.robot-tests.outputs.robot_results }}; // array
             const buyLogUrl = '${{ needs.robot-tests.outputs.test_results_url }}';
             const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
             const welcomeLogUrl = '${{ needs.robot-tests.outputs.welcome_results_url }}';
@@ -100,7 +100,7 @@ jobs:
             const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
             const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
             const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
-            const isRobotSuccess = '${{ needs.robot-tests.outputs.isRobotSuccess }}';
+            const is_robot_success = '${{ needs.robot-tests.outputs.is_robot_success }}';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
@@ -162,7 +162,7 @@ jobs:
                 
                 // Add Robot Tests summary of test results
                 robotResultFactSet = [{ title: "Robot Results"}];
-                for (const result of robotResults) {
+                for (const result of robot_results) {
                     const parsedResult = JSON.parse(result);
                     team = parsedResult.team;
                     passed = parsedResult.passed;
@@ -173,24 +173,24 @@ jobs:
                     // preparation for mention if test failed.
                     if (failed > 0) {
                         mentioned_id = (team === 'buy') ? msteamsTagBuy : ((team === 'welcome') ? msteamsTagWelcome : msteamsTagMac);
-                        msteams_entities.push({
-                            type: "mention",
-                            text: `<at>${team}</at>`,
-                            mentioned: {
-                                id: mentioned_id,
-                                name: team,
-                                type: "tag"
-                            }
-                        });
+                        // msteams_entities.push({
+                        //    type: "mention",
+                        //    text: `<at>${team}</at>`,
+                        //    mentioned: {
+                        //        id: mentioned_id,
+                        //        name: team,
+                        //        type: "tag"
+                        //    }
+                        // });
                         logUrl = (team === 'buy') ? buyLogUrl : ((team === 'welcome') ? welcomeLogUrl : macLogUrl);
-                        team = `<at>${team}</at>`;
+                        // team = `<at>${team}</at>`;
                         robotResultFactSet[0].value = "<at>qa</at>";
                         value = `📊 Total: ${total} ✅ Passed: ${passed} [❌ Failed: ${failed}](${logUrl})`;
                     }
                     robotResultFactSet.push({ title: team, value: value});
                 }
                 // add qa mention if any test failed to notify qa team
-                if (msteams_entities.length > 0) {
+                // if (msteams_entities.length > 0) {
                     msteams_entities.push({
                         type: "mention",
                         text: "<at>qa</at>",
@@ -200,7 +200,7 @@ jobs:
                             type: "tag"
                         }
                     });
-                }
+                // }
 
                 bodyItems.push({
                     type: "Container",
@@ -285,4 +285,9 @@ jobs:
 
             // Output the card as a JSON string
             core.setOutput('card_payload', JSON.stringify(card));
-            console.log(JSON.stringify(card, null, 4));
+      
+    #   - name: Send notification to MS Teams
+    #     uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
+    #     with:
+    #         webhook_url: ${{ secrets.NGSHOP_CHAPTER_QA_MS_TEAMS_WEBHOOK }}
+    #         raw: ${{ steps.build-card.outputs.card_payload }}
