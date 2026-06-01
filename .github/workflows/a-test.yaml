@@ -28,4 +28,4 @@ jobs:
         id: run_robot_test
         uses: faditkim/action-test/.github/actions/a-tests@main
         with:
-          test_conditions: asdf
+          test_conditions: ${{ matrix.test }}
