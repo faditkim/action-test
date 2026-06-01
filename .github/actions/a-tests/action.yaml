@@ -17,6 +17,7 @@ runs:
       env:
         TZ: Europe/Berlin
         CONDITIONS: ${{ inputs.test_conditions }}
-        VARIABLES: ${{inputs.robot_variables}}
+        ROBOT_VARIABLES: ${{inputs.robot_variables}}
       run: |
         echo $CONDITIONS
+        echo $ROBOT_VARIABLES
