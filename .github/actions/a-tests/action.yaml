@@ -5,6 +5,9 @@ inputs:
   test_conditions:
     description: "Dictionary"
     required: true
+  robot_variables:
+    description: "Dictionary"
+    required: true
 
 runs:
   using: 'composite'
@@ -14,5 +17,6 @@ runs:
       env:
         TZ: Europe/Berlin
         CONDITIONS: ${{ inputs.test_conditions }}
+        VARIABLES: ${{inputs.robot_variables}}
       run: |
         echo $CONDITIONS
