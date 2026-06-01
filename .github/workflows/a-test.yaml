@@ -1,4 +1,4 @@
-name: Release Train Tests
+name: A Tests
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Robot Framework tests
         id: run_robot_test
-        uses: faditkim/action-tests/.github/actions/a-tests@master
+        uses: faditkim/action-test/.github/actions/a-tests@master
         with:
             buyfulfill: ${{matrix.ngshop_rt_robot.buyfulfill}}
             
