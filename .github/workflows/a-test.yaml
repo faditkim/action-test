@@ -31,14 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: show matrix
-        shell: bash
-        run: |
-            echo ${{ matrix.include }}
-
       - name: Run Robot Framework tests
         id: run_robot_test
         uses: faditkim/action-test/.github/actions/a-tests@main
         with:
-            test_conditions: ${{ matrix.include }}
-        continue-on-error: true
+          test_conditions: ${{ matrix.include }}
