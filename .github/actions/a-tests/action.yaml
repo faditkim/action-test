@@ -19,5 +19,4 @@ runs:
         CONDITIONS: ${{ inputs.test_conditions }}
         ROBOT_VARIABLES: ${{inputs.robot_variables}}
       run: |
-        echo $CONDITIONS
-        echo $ROBOT_VARIABLES
+        echo $CONDITIONS $ROBOT_VARIABLES
