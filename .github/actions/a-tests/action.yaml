@@ -2,12 +2,19 @@ name: Input tests
 description: Composite action that executes a Robot Framework with Testingbot test
 
 inputs:
-  test_conditions:
-    description: "Dictionary"
+  team:
+    description: "Team name for test execution"
     required: true
   robot_variables:
-    description: "Dictionary"
+    description: "Injected variables for robot tests"
     required: true
+  robot_include_tags:
+    description: "Tags for including tests"
+    required: true
+  robot_exclude_tags:
+    description: "Tags for excluding tests"
+    required: false
+  
 
 runs:
   using: 'composite'
@@ -16,7 +23,13 @@ runs:
       shell: bash
       env:
         TZ: Europe/Berlin
-        CONDITIONS: ${{ inputs.test_conditions }}
+        TEAM: ${{ inputs.team }}
         ROBOT_VARIABLES: ${{inputs.robot_variables}}
+        I_TAGS: ${{inputs.robot_include_tags}}
+        E_TAGS: ${{inputs.robot_exclude_tags}}
+
       run: |
-        echo $CONDITIONS $ROBOT_VARIABLES
+        echo $TEAM
+        echo $ROBOT_VARIABLES
+        echo $I_TAGS
+        echo $E_TAGS

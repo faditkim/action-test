@@ -16,10 +16,10 @@ jobs:
         include:
           - test: buyfulfill
             robot_variables: asdf,asdf2,asdf3
-            i_tag: team:buyfulfill
+            robot_include_tags: team:buyfulfill
           - test: mac
             robot_variables: zxcv,zxcv2,zxcv3
-            e_tag: team:mac
+            robot_exclude_tags: no-run
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -30,4 +30,6 @@ jobs:
         with:
           team: ${{ matrix.test }}
           robot_variables: ${{ matrix.robot_variables }}
+          robot_include_tags: ${{ matrix.robot_include_tags }}
+          robot_exclude_tags: ${{ matrix.robot_exclude_tags }}
 
