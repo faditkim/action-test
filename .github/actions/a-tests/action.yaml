@@ -1,0 +1,19 @@
+name: Input tests
+description: Composite action that executes a Robot Framework with Testingbot test
+
+inputs:
+  buyfulfill:
+    description: "Dictionary"
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Input Tests
+      id: input-tests
+      shell: bash
+      env:
+        TZ: Europe/Berlin
+        BUYFULFILL: ${{ inputs.buyfulfill }}
+      run: |
+        echo $BUYFULFILL

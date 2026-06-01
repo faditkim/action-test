@@ -1,0 +1,37 @@
+name: Release Train Tests
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  robot-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ngshop_rt_robot:
+            - buyfulfill:
+                - variables: [abc, efg, hij]
+                - includes: [heyTag]
+                - excludes: [byeTag]
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
+      robot_results: ${{ steps.robot-summary.outputs.robot_results }}
+      is_robot_success: ${{ steps.robot-summary.outputs.is_robot_success }}
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run Robot Framework tests
+        id: run_robot_test
+        uses: faditkim/action-tests/.github/actions/a-tests@master
+        with:
+            buyfulfill: ${{matrix.ngshop_rt_robot.buyfulfill}}
+            
+        continue-on-error: true
