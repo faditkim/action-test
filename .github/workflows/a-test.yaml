@@ -14,19 +14,12 @@ jobs:
       matrix:
         test: [buyfulfill, mac]
         include:
-            - test: buyfulfill
-              robot_variables: asdf,asdf2,asdf3
-              i_tag: team:buyfulfill
-            - test: mac
-              robot_variables: zxcv,zxcv2,zxcv3
-              e_tag: team:mac
-    permissions:
-      contents: read
-      id-token: write
-    outputs:
-      test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
-      robot_results: ${{ steps.robot-summary.outputs.robot_results }}
-      is_robot_success: ${{ steps.robot-summary.outputs.is_robot_success }}
+          - test: buyfulfill
+            robot_variables: asdf,asdf2,asdf3
+            i_tag: team:buyfulfill
+          - test: mac
+            robot_variables: zxcv,zxcv2,zxcv3
+            e_tag: team:mac
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
