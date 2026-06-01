@@ -37,5 +37,4 @@ jobs:
       - name: Show results
         shell: bash
         run: |
-          echo ${{run_robot_test.outputs.team_name}}
-          
+          echo ${{steps.run_robot_test.outputs.team_name}}
