@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        buyfulfill:
-            - variables: [abc, efg, hij]
-            - includes: [heyTag]
-            - excludes: [byeTag]
+        robot_variables:
+            - buyfulfill: [abc, efg, hij]
+            - welcome: [heyTag]
+            - mac: [byeTag]
     permissions:
       contents: read
       id-token: write
@@ -31,5 +31,5 @@ jobs:
         id: run_robot_test
         uses: faditkim/action-test/.github/actions/a-tests@main
         with:
-            buyfulfill: ${{ matrix.buyfulfill.buyfulfill.variables }}
+            buyfulfill: ${{ matrix.robot_variables.buyfulfill }}
         continue-on-error: true
