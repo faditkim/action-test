@@ -32,5 +32,5 @@ jobs:
         id: run_robot_test
         uses: faditkim/action-test/.github/actions/a-tests@main
         with:
-            buyfulfill: ${{matrix.ngshop_rt_robot.buyfulfill}}
+            buyfulfill: ${{ matrix.ngshop_rt_robot.buyfulfill }}
         continue-on-error: true
