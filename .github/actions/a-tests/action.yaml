@@ -9,7 +9,6 @@ runs:
   using: 'composite'
   steps:
     - name: Input Tests
-      id: input-tests
       shell: bash
       env:
         TZ: Europe/Berlin

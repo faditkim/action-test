@@ -35,4 +35,4 @@ jobs:
         id: run_robot_test
         uses: faditkim/action-test/.github/actions/a-tests@main
         with:
-          test_conditions: ${{ matrix.include.test }}
+          test_conditions: ${{ matrix.include }}
