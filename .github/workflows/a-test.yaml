@@ -12,10 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        robot_variables:
-            - buyfulfill: [abc, efg, hij]
-            - welcome: [heyTag]
-            - mac: [byeTag]
+        test: [buyfulfill, mac]
+        include:
+            - test: buyfulfill
+              robot_variables: asdf,asdf2,asdf3
+              i_tag: team:buyfulfill
+            - test: mac
+              robot_variables: zxcv,zxcv2,zxcv3
+              e_tag: team:mac
     permissions:
       contents: read
       id-token: write
@@ -31,5 +35,5 @@ jobs:
         id: run_robot_test
         uses: faditkim/action-test/.github/actions/a-tests@main
         with:
-            buyfulfill: ${{ matrix.robot_variables }}
+            test_conditions: ${{ matrix.include }}
         continue-on-error: true

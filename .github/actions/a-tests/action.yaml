@@ -2,7 +2,7 @@ name: Input tests
 description: Composite action that executes a Robot Framework with Testingbot test
 
 inputs:
-  buyfulfill:
+  test_conditions:
     description: "Dictionary"
     required: false
 
@@ -14,6 +14,6 @@ runs:
       shell: bash
       env:
         TZ: Europe/Berlin
-        BUYFULFILL: ${{ inputs.buyfulfill }}
+        CONDITIONS: ${{ inputs.test_conditions }}
       run: |
-        echo $BUYFULFILL
+        echo $CONDITIONS
