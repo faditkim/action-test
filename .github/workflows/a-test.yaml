@@ -8,6 +8,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World!
+        shell: bash
+        run: |
+          echo "Hello World"
+
   robot-tests:
     runs-on: ubuntu-latest
     strategy:
@@ -38,3 +46,11 @@ jobs:
         shell: bash
         run: |
           echo ${{steps.run_robot_test.outputs.team_name}}
+  
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bye World!
+        shell: bash
+        run: |
+          echo "Bye World"
