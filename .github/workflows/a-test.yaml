@@ -34,3 +34,8 @@ jobs:
           robot_include_tags: ${{ matrix.robot_include_tags }}
           robot_exclude_tags: ${{ matrix.robot_exclude_tags }}
 
+      - name: Show results
+        shell: bash
+        run: |
+          echo ${{run_robot_test.outputs.team_name}}
+          

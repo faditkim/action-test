@@ -15,11 +15,16 @@ inputs:
     description: "Tags for excluding tests"
     required: false
   
+outputs:
+  team_name: 
+    description: 'URL to test results'
+    value: ${{ steps.test_results.outputs.TEAM }}
 
 runs:
   using: 'composite'
   steps:
     - name: Input Tests
+      id: test_results
       shell: bash
       env:
         TZ: Europe/Berlin
@@ -29,7 +34,7 @@ runs:
         E_TAGS: ${{inputs.robot_exclude_tags}}
 
       run: |
-        echo $TEAM
-        echo $ROBOT_VARIABLES
-        echo $I_TAGS
-        echo $E_TAGS
+        echo "TEAM=$TEAM" >> $GITHUB_OUTPUT
+        echo "ROBOT_VARIABLES=$TEAM" >> $GITHUB_OUTPUT
+        echo "I_TAGS=$TEAM" >> $GITHUB_OUTPUT
+        echo "E_TAGS=$TEAM" >> $GITHUB_OUTPUT
