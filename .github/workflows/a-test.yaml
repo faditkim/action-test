@@ -17,6 +17,7 @@ jobs:
           echo "Hello World"
 
   robot-tests:
+    needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,6 +49,7 @@ jobs:
           echo ${{steps.run_robot_test.outputs.team_name}}
   
   finalize:
+    needs: robot-tests
     runs-on: ubuntu-latest
     steps:
       - name: Bye World!
