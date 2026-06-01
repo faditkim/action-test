@@ -15,10 +15,11 @@ jobs:
         test: [buyfulfill, mac]
         include:
           - test: buyfulfill
-            robot_variables: [asdf,asdf2,asdf3]
+            robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
             robot_include_tags: team:buyfulfill
           - test: mac
-            robot_variables: [zxcv,zxcv2,zxcv3]
+            robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
+            robot_include_tags: team:mac
             robot_exclude_tags: no-run
 
     steps:
