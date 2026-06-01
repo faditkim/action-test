@@ -4,6 +4,7 @@ description: Composite action that executes a Robot Framework with Testingbot te
 inputs:
   test_conditions:
     description: "Dictionary"
+    required: true
 
 runs:
   using: 'composite'
