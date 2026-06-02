@@ -45,9 +45,19 @@ runs:
         ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
       run: |
+        # variables
         echo robot_variables="-v ${ROBOT_VARIABLES//,/ -v } -v FLATTEN:robot:flatten" >> $GITHUB_OUTPUT
+        
+        # including tag
         echo robot_including_tag="-i $ROBOT_INCLUDING_TAG" >> $GITHUB_OUTPUT
-        echo robot_excluding_tag="-e $ROBOT_EXCLUDING_TAG" >> $GITHUB_OUTPUT
+        
+        # excluding tag
+        excluding_tag_length=${#ROBOT_EXCLUDING_TAG}
+        if excluding_tag_length > 0; then
+          echo robot_excluding_tag="-e $ROBOT_EXCLUDING_TAG" >> $GITHUB_OUTPUT
+        fi
+
+        # retry listener
         if $ROBOT_RETRY_LISTENER_USAGE; then
           echo robot_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
         fi
