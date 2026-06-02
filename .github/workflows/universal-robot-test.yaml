@@ -44,7 +44,7 @@ jobs:
         uses: faditkim/action-test/.github/actions/universal-robot-test@main
         with:
           github_checkout_path: .
-          test_path: ${{ matrix.test }}
+          test_domain: ${{ matrix.test }}
           robot_variables: ${{ matrix.robot_variables }}
           robot_including_tag: ${{ matrix.robot_including_tag }}
           robot_excluding_tag: ${{ matrix.robot_excluding_tag }}
