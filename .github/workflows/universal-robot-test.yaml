@@ -25,28 +25,29 @@ jobs:
         include:
           - test: buyfulfill
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
-            robot_include_tags: team:buyfulfill
+            robot_including_tag: team:buyfulfill
+            robot_output_dir: buyfulfill
           - test: mac
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
-            robot_include_tags: team:mac
-            robot_exclude_tags: no-run
+            robot_including_tag: team:mac
+            robot_excluding_tag: no-run
+            robot_output_dir: mac
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run Robot Framework tests
         id: run_robot_test
-        uses: faditkim/action-test/.github/actions/a-tests@main
+        uses: faditkim/action-test/.github/actions/universal-robot-test@main
         with:
-          team: ${{ matrix.test }}
+          github_checkout_path: .
+          test_path: ${{ matrix.test }}
           robot_variables: ${{ matrix.robot_variables }}
-          robot_include_tags: ${{ matrix.robot_include_tags }}
-          robot_exclude_tags: ${{ matrix.robot_exclude_tags }}
-
-      - name: Show results
-        shell: bash
-        run: |
-          echo ${{steps.run_robot_test.outputs.team_name}}
+          robot_including_tag: ${{ matrix.robot_including_tags }}
+          robot_excluding_tag: ${{ matrix.robot_excluding_tags }}
+          robot_output_dir: ${{ matrix.robot_output_dir }}  
+          robot_retry_listner_usage: "true"
+          robot_retry_failed_count: 1
   
   finalize:
     needs: robot-tests
