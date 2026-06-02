@@ -59,11 +59,10 @@ runs:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         TEST_PATH: ${{ inputs.test_path }}
         ROBOT_VARIABLES: ${{ steps.format_robot_arguments.outputs.robot_variables }}
-        ROBOT_INCLUDING_TAG: ${{ inputs.robot_including_tag }}
-        ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
+        ROBOT_INCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_including_tag }}
+        ROBOT_EXCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_excluding_tag }}
         ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
-        ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
-        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
+        ROBOT_RETRY_LISTENER: ${{ steps.format_robot_arguments.outputs.robot_retry_listener }}
       run: |
         echo "checkout_path - $GITHUB_CHECKOUT_PATH"
         echo "test_path -> $TEST_PATH"
@@ -71,8 +70,8 @@ runs:
         echo "robot_including -> $ROBOT_INCLUDING_TAG"
         echo "robot_excluding -> $ROBOT_EXCLUDING_TAG"
         echo "output_path -> $ROBOT_OUTPUT_PATH"
-        echo "robot_listener_usage -> $ROBOT_RETRY_LISTENER_USAGE"
-        echo "robot_retry_failed_count -> $ROBOT_RETRY_FAILED_COUNT"
+        echo "robot_listener -> $ROBOT_RETRY_LISTENER"
+
 
     - name: Run Robot Framework tests
       shell: bash
@@ -84,8 +83,6 @@ runs:
         ROBOT_INCLUDING_TAG: ${{ inputs.robot_including_tag }}
         ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
         ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
-        ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
-        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
       run: |
         echo "checkout_path - $GITHUB_CHECKOUT_PATH"
         echo "test_path -> $TEST_PATH"
