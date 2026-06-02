@@ -18,7 +18,7 @@ inputs:
   robot_excluding_tag:
     description: "Tags for excluding tests"
     required: false
-  robot_output_dir:
+  robot_output_path:
     description: "Configurable output directory"
     required: false
     default: results
@@ -35,23 +35,33 @@ runs:
   using: 'composite'
 
   steps:
-    - name: Organize Robot Framework variables
-      id: format_robot_variables
+    - name: Organize Robot Framework arguments
+      id: format_robot_arguments
       shell: bash
       env:
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
+        ROBOT_INCLUDING_TAG: ${{ inputs.robot_including_tag }}
+        ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
+        ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
+        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
       run: |
-        echo robot_variables="-v $ROBOT_VARIABLES//,/ -v }" >> $GITHUB_OUTPUT
+        echo robot_variables="-v ${ROBOT_VARIABLES//,/ -v } -v FLATTEN:robot:flatten" >> $GITHUB_OUTPUT
+        echo robot_including_tag="-i $ROBOT_INCLUDING_TAG" >> $GITHUB_OUTPUT
+        echo robot_excluding_tag="-e $ROBOT_EXCLUDING_TAG" >> $GITHUB_OUTPUT
+        if $ROBOT_RETRY_LISTENER_USAGE; then
+          echo robot_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
+        fi
 
     - name: Run Robot Framework tests
       shell: bash
+      if: ${{ inputs.robot_retry_listner_usage == "true" }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         TEST_PATH: ${{ inputs.test_path }}
         ROBOT_VARIABLES: ${{ steps.format_robot_variables.outputs.robot_variables }}
         ROBOT_INCLUDING_TAG: ${{ inputs.robot_including_tag }}
         ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
-        ROBOT_OUTPUT_DIR: ${{ inputs.robot_output_dir }}
+        ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
         ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
       run: |
@@ -60,7 +70,29 @@ runs:
         echo "robot_variables -> $ROBOT_VARIABLES"
         echo "robot_including -> $ROBOT_INCLUDING_TAG"
         echo "robot_excluding -> $ROBOT_EXCLUDING_TAG"
-        echo "output_dir -> $ROBOT_OUTPUT_DIR"
+        echo "output_path -> $ROBOT_OUTPUT_PATH"
+        echo "robot_listener_usage -> $ROBOT_RETRY_LISTENER_USAGE"
+        echo "robot_retry_failed_count -> $ROBOT_RETRY_FAILED_COUNT"
+
+    - name: Run Robot Framework tests
+      shell: bash
+      if: ${{ inputs.robot_retry_listner_usage == "false" }}
+      env:
+        GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
+        TEST_PATH: ${{ inputs.test_path }}
+        ROBOT_VARIABLES: ${{ steps.format_robot_variables.outputs.robot_variables }}
+        ROBOT_INCLUDING_TAG: ${{ inputs.robot_including_tag }}
+        ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
+        ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
+        ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
+        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
+      run: |
+        echo "checkout_path - $GITHUB_CHECKOUT_PATH"
+        echo "test_path -> $TEST_PATH"
+        echo "robot_variables -> $ROBOT_VARIABLES"
+        echo "robot_including -> $ROBOT_INCLUDING_TAG"
+        echo "robot_excluding -> $ROBOT_EXCLUDING_TAG"
+        echo "output_path -> $ROBOT_OUTPUT_PATH"
         echo "robot_listener_usage -> $ROBOT_RETRY_LISTENER_USAGE"
         echo "robot_retry_failed_count -> $ROBOT_RETRY_FAILED_COUNT"
 
