@@ -6,7 +6,7 @@ inputs:
     description: 'Path to checkout to if required'
     required: false
     default: .      
-  test_path:
+  test_domain:
     description: "Path of test execution"
     required: true
   robot_variables:
@@ -44,6 +44,7 @@ runs:
         ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
         ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
+        TEST_DOMAIN: ${{ inputs.test_domain }}
       run: |
         # variables
         echo robot_variables="-v ${ROBOT_VARIABLES//,/ -v } -v FLATTEN:robot:flatten" >> $GITHUB_OUTPUT
@@ -61,12 +62,15 @@ runs:
           echo robot_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
         fi
 
+        # test path
+        echo test_path="./tests/$TEST_DOMAIN" >> $GITHUB_OUTPUT
+
     - name: Run Robot Framework tests with listener RetryFailed
       shell: bash
       if: ${{ inputs.robot_retry_listner_usage == 'true' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
-        TEST_PATH: ${{ inputs.test_path }}
+        TEST_PATH: ${{ steps.format_robot_arguments.outputs.test_path }}
         ROBOT_VARIABLES: ${{ steps.format_robot_arguments.outputs.robot_variables }}
         ROBOT_INCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_including_tag }}
         ROBOT_EXCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_excluding_tag }}
@@ -87,7 +91,7 @@ runs:
       if: ${{ inputs.robot_retry_listner_usage == 'false' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
-        TEST_PATH: ${{ inputs.test_path }}
+        TEST_PATH: ${{ steps.format_robot_arguments.outputs.test_path }}
         ROBOT_VARIABLES: ${{ steps.format_robot_arguments.outputs.robot_variables }}
         ROBOT_INCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_including_tag }}
         ROBOT_EXCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_excluding_tag }}
