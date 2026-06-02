@@ -52,7 +52,7 @@ runs:
           echo robot_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
         fi
 
-    - name: Run Robot Framework tests
+    - name: Run Robot Framework tests with listener RetryFailed
       shell: bash
       if: ${{ inputs.robot_retry_listner_usage == 'true' }}
       env:
@@ -73,7 +73,7 @@ runs:
         echo "robot_listener -> $ROBOT_RETRY_LISTENER"
 
 
-    - name: Run Robot Framework tests
+    - name: Run Robot Framework tests with manual retry handling
       shell: bash
       if: ${{ inputs.robot_retry_listner_usage == 'false' }}
       env:
