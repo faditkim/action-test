@@ -43,8 +43,8 @@ jobs:
           github_checkout_path: .
           test_path: ${{ matrix.test }}
           robot_variables: ${{ matrix.robot_variables }}
-          robot_including_tag: ${{ matrix.robot_including_tags }}
-          robot_excluding_tag: ${{ matrix.robot_excluding_tags }}
+          robot_including_tag: ${{ matrix.robot_including_tag }}
+          robot_excluding_tag: ${{ matrix.robot_excluding_tag }}
           robot_output_dir: ${{ matrix.robot_output_dir }}  
           robot_retry_listner_usage: "true"
           robot_retry_failed_count: 1

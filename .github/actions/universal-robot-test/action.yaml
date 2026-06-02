@@ -41,7 +41,7 @@ runs:
       env:
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
       run: |
-        echo robot_variables="${ROBOT_VARIABLES//,/ -v }" >> $GITHUB_OUTPUT
+        echo robot_variables="-v $ROBOT_VARIABLES//,/ -v }" >> $GITHUB_OUTPUT
 
     - name: Run Robot Framework tests
       shell: bash
