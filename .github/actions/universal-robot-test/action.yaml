@@ -52,7 +52,7 @@ runs:
         echo robot_including_tag="-i $ROBOT_INCLUDING_TAG" >> $GITHUB_OUTPUT
         
         # excluding tag
-        if ${#ROBOT_EXCLUDING_TAG} > 0; then
+        if [[ ${#ROBOT_EXCLUDING_TAG} -gt 0 ]] ; then
           echo robot_excluding_tag="-e $ROBOT_EXCLUDING_TAG" >> $GITHUB_OUTPUT
         fi
 
