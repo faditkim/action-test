@@ -90,6 +90,4 @@ runs:
         echo "robot_including -> $ROBOT_INCLUDING_TAG"
         echo "robot_excluding -> $ROBOT_EXCLUDING_TAG"
         echo "output_path -> $ROBOT_OUTPUT_PATH"
-        echo "robot_listener_usage -> $ROBOT_RETRY_LISTENER_USAGE"
-        echo "robot_retry_failed_count -> $ROBOT_RETRY_FAILED_COUNT"
 
