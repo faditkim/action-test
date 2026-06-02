@@ -54,7 +54,7 @@ runs:
 
     - name: Run Robot Framework tests
       shell: bash
-      if: ${{ inputs.robot_retry_listner_usage == "true" }}
+      if: ${{ inputs.robot_retry_listner_usage == 'true' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         TEST_PATH: ${{ inputs.test_path }}
@@ -76,7 +76,7 @@ runs:
 
     - name: Run Robot Framework tests
       shell: bash
-      if: ${{ inputs.robot_retry_listner_usage == "false" }}
+      if: ${{ inputs.robot_retry_listner_usage == 'false' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         TEST_PATH: ${{ inputs.test_path }}
