@@ -44,7 +44,7 @@ outputs:
     value: ${{ steps.robot_options.outputs.robot_opt_output_path }}
   robot_test_path: 
     description: 'URL to test results'
-    value: ${{ steps.robot_options.outputs.test_path }}
+    value: ${{ steps.robot_options.outputs.robot_test_path }}
   robot_opt_log_level: 
     description: 'URL to test results'
     value: ${{ steps.robot_options.outputs.robot_opt_log_level }}
@@ -57,12 +57,12 @@ runs:
       id: robot_options
       shell: bash
       env:
+        TEST_DOMAIN: ${{ inputs.test_domain }}
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
         ROBOT_INCLUDING: ${{ inputs.robot_including }}
         ROBOT_EXCLUDING: ${{ inputs.robot_excluding }}
-        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
-        TEST_DOMAIN: ${{ inputs.test_domain }}
         ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
+        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
         ROBOT_LOG_LEVEL: ${{ inputs.robot_log_level }}
       run: |
         # variables
