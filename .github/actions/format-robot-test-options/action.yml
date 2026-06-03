@@ -78,8 +78,11 @@ runs:
         fi
 
         # retry listener
-        echo "ROBOT_RETRY_FAILED_COUNT -> $ROBOT_RETRY_FAILED_COUNT"
-        echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
+        if [[ ${#ROBOT_EXCLUDING} -eq 0 ]]  # case of empty string (= use default)
+          echo robot_opt_retry_listener="--listener RetryFailed:1" >> $GITHUB_OUTPUT
+        else
+          echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
+        fi
 
         # output directory
         echo robot_opt_output_path="-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
