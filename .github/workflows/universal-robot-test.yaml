@@ -27,6 +27,7 @@ jobs:
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
             robot_including: team:buyfulfillANDsuite:asdfasdf
             robot_output_path: results/buy
+            robot_retry_failed_count: 0
           - test: mac
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
             robot_including: team:mac

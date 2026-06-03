@@ -20,7 +20,7 @@ inputs:
     default: results
   robot_retry_failed_count:
     description: "A number of retry count"
-    required: true
+    required: false
     default: "1"
   robot_log_level:
     description: "A level defintion of robot test log"
