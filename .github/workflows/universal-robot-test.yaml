@@ -68,7 +68,7 @@ jobs:
           robot_opt_log_level: ${{steps.format_robot_options.outputs.robot_opt_log_level}}
 
       - name: Run Robot Framework tests with post retry
-        id: run_robot_test
+        id: run_robot_test_post_retry
         uses: faditkim/action-test/.github/actions/robot-test-execution-post-retry@main
         with:
           github_checkout_path: .
