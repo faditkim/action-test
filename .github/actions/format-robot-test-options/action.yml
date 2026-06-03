@@ -73,12 +73,12 @@ runs:
         echo robot_opt_including="-i $ROBOT_INCLUDING" >> $GITHUB_OUTPUT
         
         # excluding tag
-        if [[ ${#ROBOT_EXCLUDING} -gt 0 ]] ; then
+        if [[ ${#ROBOT_EXCLUDING} -gt 0 ]]; then
           echo robot_opt_excluding="-e $ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
         fi
 
         # retry listener
-        if [[ ${#ROBOT_EXCLUDING} -eq 0 ]]  # case of empty string (= use default)
+        if [[ ${#ROBOT_EXCLUDING} -eq 0 ]]  # case of empty string (= use default); then
           echo robot_opt_retry_listener="--listener RetryFailed:1" >> $GITHUB_OUTPUT
         else
           echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
