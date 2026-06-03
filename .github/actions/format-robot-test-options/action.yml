@@ -78,7 +78,8 @@ runs:
         fi
 
         # retry listener
-        if [[ ${#ROBOT_EXCLUDING} -eq 0 ]]  # case of empty string (= use default); then
+        # case of empty string (= use default)
+        if [[ ${#ROBOT_EXCLUDING} -eq 0 ]]; then
           echo robot_opt_retry_listener="--listener RetryFailed:1" >> $GITHUB_OUTPUT
         else
           echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
