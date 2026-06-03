@@ -50,5 +50,5 @@ runs:
         echo "ROBOT_OPT_EXCLUDING -> $ROBOT_OPT_EXCLUDING"
         echo "ROBOT_OPT_OUTPUT_PATH -> $ROBOT_OPT_OUTPUT_PATH"
         echo "ROBOT_OPT_LOG_LEVEL -> $ROBOT_OPT_LOG_LEVEL"
-        result_path=${ROBOT_OPT_OUTPUT_PATH//-d /}
+        result_path=${ROBOT_OPT_OUTPUT_PATH//-d ./.}
         eoch "RESULT_PATH -> $result_path"
