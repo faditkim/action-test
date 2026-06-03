@@ -12,10 +12,10 @@ inputs:
   robot_variables:
     description: "Injected variables for robot tests"
     required: false
-  robot_including_tag:
+  robot_including:
     description: "Tags for including tests"
     required: true
-  robot_excluding_tag:
+  robot_excluding:
     description: "Tags for excluding tests"
     required: false
   robot_output_path:
@@ -40,8 +40,8 @@ runs:
       shell: bash
       env:
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
-        ROBOT_INCLUDING_TAG: ${{ inputs.robot_including_tag }}
-        ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding_tag }}
+        ROBOT_INCLUDING_TAG: ${{ inputs.robot_including }}
+        ROBOT_EXCLUDING_TAG: ${{ inputs.robot_excluding }}
         ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
         TEST_DOMAIN: ${{ inputs.test_domain }}
@@ -51,11 +51,11 @@ runs:
         echo robot_variables="-v ${ROBOT_VARIABLES//,/ -v } -v FLATTEN:robot:flatten" >> $GITHUB_OUTPUT
         
         # including tag
-        echo robot_including_tag="-i $ROBOT_INCLUDING_TAG" >> $GITHUB_OUTPUT
+        echo robot_including="-i $ROBOT_INCLUDING_TAG" >> $GITHUB_OUTPUT
         
         # excluding tag
         if [[ ${#ROBOT_EXCLUDING_TAG} -gt 0 ]] ; then
-          echo robot_excluding_tag="-e $ROBOT_EXCLUDING_TAG" >> $GITHUB_OUTPUT
+          echo robot_excluding="-e $ROBOT_EXCLUDING_TAG" >> $GITHUB_OUTPUT
         fi
 
         # retry listener
@@ -76,16 +76,16 @@ runs:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         TEST_PATH: ${{ steps.format_robot_options.outputs.test_path }}
         ROBOT_OPT_VARIABLES: ${{ steps.format_robot_options.outputs.robot_variables }}
-        ROBOT_OPT_INCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_including_tag }}
-        ROBOT_OPT_EXCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_excluding_tag }}
+        ROBOT_OPT_INCLUDING: ${{ steps.format_robot_options.outputs.robot_including }}
+        ROBOT_OPT_EXCLUDING: ${{ steps.format_robot_options.outputs.robot_excluding }}
         ROBOT_OPT_RETRY_LISTENER: ${{ steps.format_robot_options.outputs.robot_retry_listener }}
         ROBOT_OPT_OUTPUT_PATH: ${{ steps.format_robot_options.outputs.robot_output_path }}
       run: |
         echo "checkout_path - $GITHUB_CHECKOUT_PATH"
         echo "test_path -> $TEST_PATH"
         echo "robot_variables -> $ROBOT_OPT_VARIABLES"
-        echo "robot_including -> $ROBOT_OPT_INCLUDING_TAG"
-        echo "robot_excluding -> $ROBOT_OPT_EXCLUDING_TAG"
+        echo "robot_including -> $ROBOT_OPT_INCLUDING"
+        echo "robot_excluding -> $ROBOT_OPT_EXCLUDING"
         echo "output_path -> $ROBOT_OPT_OUTPUT_PATH"
         echo "robot_listener -> $ROBOT_OPT_RETRY_LISTENER"
 
@@ -97,14 +97,14 @@ runs:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         TEST_PATH: ${{ steps.format_robot_options.outputs.test_path }}
         ROBOT_OPT_VARIABLES: ${{ steps.format_robot_options.outputs.robot_variables }}
-        ROBOT_OPT_INCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_including_tag }}
-        ROBOT_OPT_EXCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_excluding_tag }}
+        ROBOT_OPT_INCLUDING: ${{ steps.format_robot_options.outputs.robot_including }}
+        ROBOT_OPT_EXCLUDING: ${{ steps.format_robot_options.outputs.robot_excluding }}
         ROBOT_OPT_OUTPUT_PATH: ${{ steps.format_robot_options.outputs.robot_output_path }}
       run: |
         echo "checkout_path - $GITHUB_CHECKOUT_PATH"
         echo "test_path -> $TEST_PATH"
         echo "robot_variables -> $ROBOT_OPT_VARIABLES"
-        echo "robot_including -> $ROBOT_OPT_INCLUDING_TAG"
-        echo "robot_excluding -> $ROBOT_OPT_EXCLUDING_TAG"
+        echo "robot_including -> $ROBOT_OPT_INCLUDING"
+        echo "robot_excluding -> $ROBOT_OPT_EXCLUDING"
         echo "output_path -> $ROBOT_OPT_OUTPUT_PATH"
 

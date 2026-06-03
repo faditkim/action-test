@@ -25,13 +25,13 @@ jobs:
         include:
           - test: buyfulfill
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
-            robot_including_tag: team:buyfulfill
+            robot_including: team:buyfulfill
             robot_output_path: results/buy
             robot_retry_listner_usage: "false"
           - test: mac
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
-            robot_including_tag: team:mac
-            robot_excluding_tag: no-run
+            robot_including: team:mac
+            robot_excluding: no-run
             robot_output_path: results/mac
             robot_retry_listner_usage: "true"
             robot_retry_failed_count: 1
@@ -46,8 +46,8 @@ jobs:
           github_checkout_path: .
           test_domain: ${{ matrix.test }}
           robot_variables: ${{ matrix.robot_variables }}
-          robot_including_tag: ${{ matrix.robot_including_tag }}
-          robot_excluding_tag: ${{ matrix.robot_excluding_tag }}
+          robot_including: ${{ matrix.robot_including }}
+          robot_excluding: ${{ matrix.robot_excluding }}
           robot_output_path: ${{ matrix.robot_output_path }}
           robot_retry_listner_usage: ${{ matrix.robot_retry_listner_usage }}
           robot_retry_failed_count: ${{ matrix.robot_retry_failed_count }}
