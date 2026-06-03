@@ -29,32 +29,32 @@ inputs:
 outputs:
   robot_opt_variables: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.robot_opt_variables }}
+    value: ${{ steps.robot_options.outputs.robot_opt_variables }}
   robot_opt_including: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.robot_opt_including }}
+    value: ${{ steps.robot_options.outputs.robot_opt_including }}
   robot_opt_excluding: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.robot_opt_excluding }}
+    value: ${{ steps.robot_options.outputs.robot_opt_excluding }}
   robot_opt_retry_listener: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.robot_opt_retry_listener }}
+    value: ${{ steps.robot_options.outputs.robot_opt_retry_listener }}
   robot_opt_output_path: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.robot_opt_output_path }}
+    value: ${{ steps.robot_options.outputs.robot_opt_output_path }}
   robot_test_path: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.test_path }}
+    value: ${{ steps.robot_options.outputs.test_path }}
   robot_opt_log_level: 
     description: 'URL to test results'
-    value: ${{ steps.format_robot_options.outputs.robot_opt_log_level }}
+    value: ${{ steps.robot_options.outputs.robot_opt_log_level }}
   
 runs:
   using: 'composite'
 
   steps:
     - name: Formatting Robot Framework options
-      id: format_robot_options
+      id: robot_options
       shell: bash
       env:
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
