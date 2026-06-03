@@ -1,0 +1,99 @@
+name: Run Robot Framework Test
+description: Composite action that executes a Robot Framework test
+
+inputs:
+  test_domain:
+    description: "Team name for test execution"
+    required: true
+  robot_variables:
+    description: "Injected variables for robot tests"
+    required: false
+  robot_including:
+    description: "Tags for including tests"
+    required: true
+  robot_excluding:
+    description: "Tags for excluding tests"
+    required: false
+  robot_output_path:
+    description: "Configurable output directory"
+    required: false
+    default: results
+  robot_retry_listner_usage:
+    description: "Boolean value of direct retry"
+    required: false
+    default: "true"
+  robot_retry_failed_count:
+    description: "A number of retry count"
+    required: false
+    default: "1"
+  robot_log_level:
+    description: "A level defintion of robot test log"
+    required: false
+    default: ""
+
+outputs:
+  robot_opt_variables: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.robot_opt_variables }}
+  robot_opt_including: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.robot_opt_including }}
+  robot_opt_excluding: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.robot_opt_excluding }}
+  robot_opt_retry_listener: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.robot_opt_retry_listener }}
+  robot_opt_output_path: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.robot_opt_output_path }}
+  robot_test_path: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.test_path }}
+  robot_opt_log_level: 
+    description: 'URL to test results'
+    value: ${{ steps.format_robot_options.outputs.robot_opt_log_level }}
+  
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Formatting Robot Framework options
+      id: format_robot_options
+      shell: bash
+      env:
+        ROBOT_VARIABLES: ${{ inputs.robot_variables }}
+        ROBOT_INCLUDING: ${{ inputs.robot_including }}
+        ROBOT_EXCLUDING: ${{ inputs.robot_excluding }}
+        ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
+        ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
+        TEST_DOMAIN: ${{ inputs.test_domain }}
+        ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
+        ROBOT_LOG_LEVEL: ${{ inputs.robot_log_level }}
+      run: |
+        # variables
+        echo robot_opt_variables="-v ${ROBOT_VARIABLES//,/ -v }" >> $GITHUB_OUTPUT
+        
+        # including tag
+        echo robot_opt_including="-i $ROBOT_INCLUDING" >> $GITHUB_OUTPUT
+        
+        # excluding tag
+        if [[ ${#ROBOT_EXCLUDING} -gt 0 ]] ; then
+          echo robot_opt_excluding="-e $ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
+        fi
+
+        # retry listener
+        if $ROBOT_RETRY_LISTENER_USAGE; then
+          echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
+        fi
+
+        # output directory
+        echo robot_opt_output_path="-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
+
+        # test path
+        echo robot_test_path="./tests/$TEST_DOMAIN" >> $GITHUB_OUTPUT
+
+        # log level
+        if [[ ${#ROBOT_LOG_LEVEL} -gt 0 ]] ; then
+          echo robot_opt_log_level="-L $ROBOT_LOG_LEVEL" >> GITHUB_OUTPUT
+        fi

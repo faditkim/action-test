@@ -1,0 +1,59 @@
+name: Run Robot Framework Test
+description: Composite action that executes a Robot Framework test
+
+inputs:
+  github_checkout_path:
+    description: 'Path to checkout to if required'
+    required: false
+    default: .      
+  robot_test_path:
+    description: "Test suite folders"
+    required: true
+  robot_opt_variables:
+    description: "Injected variables for robot tests"
+    required: false
+    default: ""
+  robot_opt_including:
+    description: "Including tags for fobot tests"
+    required: true
+  robot_opt_excluding:
+    description: "Excluding tags for robot tests"
+    required: false
+    default: ""
+  robot_opt_retry_listener:
+    description: "Configurable output directory"
+    required: false
+    default: results
+  robot_opt_output_path:
+    description: "Outputs folder path"
+    required: true
+  robot_opt_log_level:
+    description: "Log level definition"
+    required: false
+    default: ""
+  
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Run Robot Framework tests with listener RetryFailed
+      shell: bash
+      if: ${{ inputs.robot_retry_listner_usage == 'true' }}
+      env:
+        GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
+        ROBOT_TEST_PATH: ${{ inputs.robot_test_path }}
+        ROBOT_OPT_VARIABLES: ${{ inputs.robot_opt_variables }}
+        ROBOT_OPT_INCLUDING: ${{ inputs.robot_opt_including }}
+        ROBOT_OPT_EXCLUDING: ${{ inputs.robot_opt_excluding }}
+        ROBOT_OPT_RETRY_LISTENER: ${{ inputs.robot_opt_retry_listener }}
+        ROBOT_OPT_OUTPUT_PATH: ${{ inputs.robot_opt_output_path }}
+        ROBOT_OPT_LOG_LEVEL: ${{ inputs.robot_opt_log_level }}
+      run: |
+        echo "GITHUB_CHECKOUT_PATH - $GITHUB_CHECKOUT_PATH"
+        echo "ROBOT_TEST_PATH -> $ROBOT_TEST_PATH"
+        echo "ROBOT_OPT_VARIABLES -> $ROBOT_OPT_VARIABLES"
+        echo "ROBOT_OPT_INCLUDING -> $ROBOT_OPT_INCLUDING"
+        echo "ROBOT_OPT_EXCLUDING -> $ROBOT_OPT_EXCLUDING"
+        echo "ROBOT_OPT_OUTPUT_PATH -> $ROBOT_OPT_OUTPUT_PATH"
+        echo "ROBOT_OPT_RETRY_LISTENER -> $ROBOT_OPT_RETRY_LISTENER"
+        echo "ROBOT_OPT_LOG_LEVEL -> $ROBOT_OPT_LOG_LEVEL"

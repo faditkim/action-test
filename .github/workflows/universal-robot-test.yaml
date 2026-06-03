@@ -25,9 +25,8 @@ jobs:
         include:
           - test: buyfulfill
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
-            robot_including: team:buyfulfill
+            robot_including: team:buyfulfillANDsuite:asdfasdf
             robot_output_path: results/buy
-            robot_retry_listner_usage: "false"
           - test: mac
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
             robot_including: team:mac
@@ -39,18 +38,40 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Run Robot Framework tests
-        id: run_robot_test
-        uses: faditkim/action-test/.github/actions/universal-robot-test@main
-        with:
-          github_checkout_path: .
+      - name: Formatting Robot Framework options
+        id: foramt_robot_options
+        uses: faditkim/action-test/.github/actions/format-robot-test-options@main
+        with: 
           test_domain: ${{ matrix.test }}
           robot_variables: ${{ matrix.robot_variables }}
           robot_including: ${{ matrix.robot_including }}
           robot_excluding: ${{ matrix.robot_excluding }}
           robot_output_path: ${{ matrix.robot_output_path }}
-          robot_retry_listner_usage: ${{ matrix.robot_retry_listner_usage }}
           robot_retry_failed_count: ${{ matrix.robot_retry_failed_count }}
+
+      - name: Run Robot Framework tests
+        id: run_robot_test
+        uses: faditkim/action-test/.github/actions/robot-test-execution-direct-retry@main
+        with:
+          github_checkout_path: .
+          test_domain: ${{ steps.format_robot_options.outputs.test }}
+          robot_variables: ${{ matrix.robot_variables }}
+          robot_including: ${{ matrix.robot_including }}
+          robot_excluding: ${{ matrix.robot_excluding }}
+          robot_output_path: ${{ matrix.robot_output_path }}
+          robot_retry_failed_count: ${{ matrix.robot_retry_failed_count }}
+
+      # - name: Run Robot Framework tests
+      #   id: run_robot_test
+      #   uses: faditkim/action-test/.github/actions/robot-test-execution-post-retry@main
+      #   with:
+      #     github_checkout_path: .
+      #     test_domain: ${{ matrix.test }}
+      #     robot_variables: ${{ matrix.robot_variables }}
+      #     robot_including: ${{ matrix.robot_including }}
+      #     robot_excluding: ${{ matrix.robot_excluding }}
+      #     robot_output_path: ${{ matrix.robot_output_path }}
+      #     robot_retry_failed_count: ${{ matrix.robot_retry_failed_count }}
   
   finalize:
     needs: robot-tests
