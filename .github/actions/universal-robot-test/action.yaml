@@ -35,8 +35,8 @@ runs:
   using: 'composite'
 
   steps:
-    - name: Organize Robot Framework arguments
-      id: format_robot_arguments
+    - name: Formatting Robot Framework options
+      id: format_robot_options
       shell: bash
       env:
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
@@ -45,6 +45,7 @@ runs:
         ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
         TEST_DOMAIN: ${{ inputs.test_domain }}
+        ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
       run: |
         # variables
         echo robot_variables="-v ${ROBOT_VARIABLES//,/ -v } -v FLATTEN:robot:flatten" >> $GITHUB_OUTPUT
@@ -62,6 +63,9 @@ runs:
           echo robot_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
         fi
 
+        # output directory
+        echo robot_output_path="-d ./$ROBOT_OUTPUT_PATH"
+
         # test path
         echo test_path="./tests/$TEST_DOMAIN" >> $GITHUB_OUTPUT
 
@@ -70,20 +74,20 @@ runs:
       if: ${{ inputs.robot_retry_listner_usage == 'true' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
-        TEST_PATH: ${{ steps.format_robot_arguments.outputs.test_path }}
-        ROBOT_VARIABLES: ${{ steps.format_robot_arguments.outputs.robot_variables }}
-        ROBOT_INCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_including_tag }}
-        ROBOT_EXCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_excluding_tag }}
-        ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
-        ROBOT_RETRY_LISTENER: ${{ steps.format_robot_arguments.outputs.robot_retry_listener }}
+        TEST_PATH: ${{ steps.format_robot_options.outputs.test_path }}
+        ROBOT_OPT_VARIABLES: ${{ steps.format_robot_options.outputs.robot_variables }}
+        ROBOT_OPT_INCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_including_tag }}
+        ROBOT_OPT_EXCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_excluding_tag }}
+        ROBOT_OPT_RETRY_LISTENER: ${{ steps.format_robot_options.outputs.robot_retry_listener }}
+        ROBOT_OPT_OUTPUT_PATH: ${{ steps.format_robot_options.outputs.robot_output_path }}
       run: |
         echo "checkout_path - $GITHUB_CHECKOUT_PATH"
         echo "test_path -> $TEST_PATH"
-        echo "robot_variables -> $ROBOT_VARIABLES"
-        echo "robot_including -> $ROBOT_INCLUDING_TAG"
-        echo "robot_excluding -> $ROBOT_EXCLUDING_TAG"
-        echo "output_path -> $ROBOT_OUTPUT_PATH"
-        echo "robot_listener -> $ROBOT_RETRY_LISTENER"
+        echo "robot_variables -> $ROBOT_OPT_VARIABLES"
+        echo "robot_including -> $ROBOT_OPT_INCLUDING_TAG"
+        echo "robot_excluding -> $ROBOT_OPT_EXCLUDING_TAG"
+        echo "output_path -> $ROBOT_OPT_OUTPUT_PATH"
+        echo "robot_listener -> $ROBOT_OPT_RETRY_LISTENER"
 
 
     - name: Run Robot Framework tests with manual retry handling
@@ -91,16 +95,16 @@ runs:
       if: ${{ inputs.robot_retry_listner_usage == 'false' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
-        TEST_PATH: ${{ steps.format_robot_arguments.outputs.test_path }}
-        ROBOT_VARIABLES: ${{ steps.format_robot_arguments.outputs.robot_variables }}
-        ROBOT_INCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_including_tag }}
-        ROBOT_EXCLUDING_TAG: ${{ steps.format_robot_arguments.outputs.robot_excluding_tag }}
-        ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
+        TEST_PATH: ${{ steps.format_robot_options.outputs.test_path }}
+        ROBOT_OPT_VARIABLES: ${{ steps.format_robot_options.outputs.robot_variables }}
+        ROBOT_OPT_INCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_including_tag }}
+        ROBOT_OPT_EXCLUDING_TAG: ${{ steps.format_robot_options.outputs.robot_excluding_tag }}
+        ROBOT_OPT_OUTPUT_PATH: ${{ steps.format_robot_options.outputs.robot_output_path }}
       run: |
         echo "checkout_path - $GITHUB_CHECKOUT_PATH"
         echo "test_path -> $TEST_PATH"
-        echo "robot_variables -> $ROBOT_VARIABLES"
-        echo "robot_including -> $ROBOT_INCLUDING_TAG"
-        echo "robot_excluding -> $ROBOT_EXCLUDING_TAG"
-        echo "output_path -> $ROBOT_OUTPUT_PATH"
+        echo "robot_variables -> $ROBOT_OPT_VARIABLES"
+        echo "robot_including -> $ROBOT_OPT_INCLUDING_TAG"
+        echo "robot_excluding -> $ROBOT_OPT_EXCLUDING_TAG"
+        echo "output_path -> $ROBOT_OPT_OUTPUT_PATH"
 
