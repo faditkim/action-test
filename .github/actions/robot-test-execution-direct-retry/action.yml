@@ -38,7 +38,6 @@ runs:
   steps:
     - name: Run Robot Framework tests with listener RetryFailed
       shell: bash
-      if: ${{ inputs.robot_retry_listner_usage == 'true' }}
       env:
         GITHUB_CHECKOUT_PATH: ${{ inputs.github_checkout_path }}
         ROBOT_TEST_PATH: ${{ inputs.robot_test_path }}
