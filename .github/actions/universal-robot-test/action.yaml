@@ -64,7 +64,7 @@ runs:
         fi
 
         # output directory
-        echo robot_output_path="-d ./$ROBOT_OUTPUT_PATH"
+        echo robot_output_path="-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
 
         # test path
         echo test_path="./tests/$TEST_DOMAIN" >> $GITHUB_OUTPUT
