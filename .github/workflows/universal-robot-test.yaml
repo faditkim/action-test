@@ -32,7 +32,6 @@ jobs:
             robot_including: team:mac
             robot_excluding: no-run
             robot_output_path: results/mac
-            robot_retry_listner_usage: "true"
             robot_retry_failed_count: 1
 
     steps:

@@ -18,14 +18,9 @@ inputs:
     description: "Configurable output directory"
     required: false
     default: results
-  robot_retry_listner_usage:
-    description: "Boolean value of direct retry"
-    required: false
-    default: "true"
   robot_retry_failed_count:
     description: "A number of retry count"
-    required: false
-    default: "1"
+    required: true
   robot_log_level:
     description: "A level defintion of robot test log"
     required: false
@@ -65,7 +60,6 @@ runs:
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
         ROBOT_INCLUDING: ${{ inputs.robot_including }}
         ROBOT_EXCLUDING: ${{ inputs.robot_excluding }}
-        ROBOT_RETRY_LISTENER_USAGE: ${{ inputs.robot_retry_listner_usage }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
         TEST_DOMAIN: ${{ inputs.test_domain }}
         ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
