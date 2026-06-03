@@ -21,6 +21,7 @@ inputs:
   robot_retry_failed_count:
     description: "A number of retry count"
     required: true
+    default: "1"
   robot_log_level:
     description: "A level defintion of robot test log"
     required: false
@@ -77,6 +78,7 @@ runs:
         fi
 
         # retry listener
+        echo "ROBOT_RETRY_FAILED_COUNT -> $ROBOT_RETRY_FAILED_COUNT"
         echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
 
         # output directory
