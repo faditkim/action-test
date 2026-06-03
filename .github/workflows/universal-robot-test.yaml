@@ -21,19 +21,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        test: [buyfulfill, mac]
+        test: [buyfulfill, mac, welcome]
         include:
           - test: buyfulfill
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
             robot_including: team:buyfulfillANDsuite:asdfasdf
             robot_output_path: results/buy
-            robot_retry_failed_count: 1
+            robot_retry_failed_count: 0
           - test: mac
             robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
             robot_including: team:mac
             robot_excluding: no-run
             robot_output_path: results/mac
             robot_retry_failed_count: 1
+          - test: welcome
+            robot_variables: COUNTRY:Germany,TEST_RUN_URL:www.asdf.com
+            robot_including: team:mac
+            robot_excluding: no-run
+            robot_output_path: results/welcome
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
