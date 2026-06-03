@@ -83,9 +83,7 @@ runs:
         fi
 
         # retry listener
-        if $ROBOT_RETRY_LISTENER_USAGE; then
-          echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
-        fi
+        echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
 
         # output directory
         echo robot_opt_output_path="-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
