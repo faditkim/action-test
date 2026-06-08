@@ -1,0 +1,59 @@
+name: Run Robot Framework Test
+description: Composite action that executes a Robot Framework test
+
+inputs:
+  test_path:
+    description: "Team name for test execution"
+    required: true
+  robot_variables:
+    description: "Injected variables for robot tests"
+    required: false
+  robot_including:
+    description: "Tags for including tests"
+    required: true
+  robot_excluding:
+    description: "Tags for excluding tests"
+    required: false
+  robot_output_path:
+    description: "Configurable output directory"
+    required: false
+    default: results
+  robot_retry_failed_count:
+    description: "A number of retry count"
+    required: false
+    default: "1"
+  robot_log_level:
+    description: "A level defintion of robot test log"
+    required: false
+    default: ""
+  
+runs:
+  using: 'composite'
+
+  steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - name: Formatting Robot Framework options
+      id: format_robot_options
+      uses: faditkim/action-test/.github/actions/format-robot-test-options@main
+      with: 
+        test_path: ${{ inputs.test_path }}
+        robot_variables: ${{ inputs.robot_variables }}
+        robot_including: ${{ inputs.robot_including }}
+        robot_excluding: ${{ inputs.robot_excluding }}
+        robot_output_path: ${{ inputs.robot_output_path }}
+        robot_retry_failed_count: ${{ inputs.robot_retry_failed_count }}
+
+    - name: Run Robot Framework tests direct retry
+      id: run_robot_test
+      uses: faditkim/action-test/.github/actions/robot-test-execution-direct-retry@main
+      with:
+        github_checkout_path: .
+        robot_test_path: ${{ steps.format_robot_options.outputs.robot_test_path }}
+        robot_opt_variables: ${{ steps.format_robot_options.outputs.robot_opt_variables }}
+        robot_opt_including: ${{ steps.format_robot_options.outputs.robot_opt_including }}
+        robot_opt_excluding: ${{ steps.format_robot_options.outputs.robot_opt_excluding }}
+        robot_opt_retry_listener: ${{ steps.format_robot_options.outputs.robot_opt_retry_listener }}
+        robot_opt_output_path: ${{ steps.format_robot_options.outputs.robot_opt_output_path }}
+        robot_opt_log_level: ${{steps.format_robot_options.outputs.robot_opt_log_level}}
+  
