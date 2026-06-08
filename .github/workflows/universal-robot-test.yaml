@@ -43,8 +43,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Formatting Robot Framework options
-        id: format_robot_options
+      - name: Robot tests
+        id: run_robot_test
         uses: faditkim/action-test/.github/actions/robot-test@main
         with: 
           test_path: ${{ matrix.test }}
