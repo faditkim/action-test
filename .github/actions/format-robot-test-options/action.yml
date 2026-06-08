@@ -2,7 +2,7 @@ name: Run Robot Framework Test
 description: Composite action that executes a Robot Framework test
 
 inputs:
-  test_domain:
+  test_path:
     description: "Team name for test execution"
     required: true
   robot_variables:
@@ -58,7 +58,7 @@ runs:
       id: robot_options
       shell: bash
       env:
-        TEST_DOMAIN: ${{ inputs.test_domain }}
+        TEST_PATH: ${{ inputs.test_path }}
         ROBOT_VARIABLES: ${{ inputs.robot_variables }}
         ROBOT_INCLUDING: ${{ inputs.robot_including }}
         ROBOT_EXCLUDING: ${{ inputs.robot_excluding }}
@@ -89,7 +89,7 @@ runs:
         echo robot_opt_output_path="-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
 
         # test path
-        echo robot_test_path="./tests/$TEST_DOMAIN" >> $GITHUB_OUTPUT
+        echo robot_test_path="./tests/$TEST_PATH" >> $GITHUB_OUTPUT
 
         # log level
         if [[ ${#ROBOT_LOG_LEVEL} -gt 0 ]] ; then
