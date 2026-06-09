@@ -78,15 +78,15 @@ jobs:
                               elif failed > 0:
                                   print(f"✅ {team}: All {failed} failures are non-blocking (notBlock tag)")
 
-                # Final status message
-                if is_robot_success == "false":
-                    print(f"\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
-                else:
-                    print(f"\n✅ No blocking failures found - release train can proceed")
+              # Final status message
+              if not is_robot_success
+                  print(f"\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
+              else:
+                  print(f"\n✅ No blocking failures found - release train can proceed")
 
-                with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-                    f.write(f"robot_results={robot_results}\n")
-                    f.write(f"is_robot_success={is_robot_success}\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write(f"robot_results={robot_results}\n")
+                  f.write(f"is_robot_success={is_robot_success}\n")
           EOF
   finalize:
     runs-on: ubuntu-latest
