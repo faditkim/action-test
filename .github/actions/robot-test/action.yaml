@@ -30,10 +30,10 @@ inputs:
 outputs:
   buy_results_url: 
     description: 'URL to test results'
-    value: ${{ steps.export_url.outputs.buy_results_url }}
+    value: ${{ steps.run_robot_test.outputs.buy_results_url }}
   mac_results_url: 
     description: 'URL to test results'
-    value: ${{ steps.export_url.outputs.mac_results_url }}
+    value: ${{ steps.run_robot_test.outputs.mac_results_url }}
 
 runs:
   using: 'composite'
