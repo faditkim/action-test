@@ -33,9 +33,9 @@ inputs:
     default: ""
 
 outputs:
-  buy_results_url: 
+  buyfulfill_results_url: 
     description: 'URL to test results'
-    value: ${{ steps.export_url.outputs.buy_results_url }}
+    value: ${{ steps.export_url.outputs.buyfulfill_results_url }}
   mac_results_url: 
     description: 'URL to test results'
     value: ${{ steps.export_url.outputs.mac_results_url }}
@@ -73,7 +73,7 @@ runs:
       run: |
         if [[ $ROBOT_TEST_PATH == *"buyfulfill"* ]]; then
           echo "www.google.com/buy"
-          echo buy_results_url="www.google.com/buy" >> $GITHUB_OUTPUT
+          echo buyfulfill_results_url:="www.google.com/buy" >> $GITHUB_OUTPUT
         elif [[ $ROBOT_TEST_PATH == *"mac"* ]]; then
           echo "www.google.com/mac"
           echo mac_results_url="www.google.com/mac" >> $GITHUB_OUTPUT

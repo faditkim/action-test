@@ -28,9 +28,9 @@ inputs:
     default: ""
 
 outputs:
-  buy_results_url: 
+  buyfulfill_results_url: 
     description: 'URL to test results'
-    value: ${{ steps.run_robot_test.outputs.buy_results_url }}
+    value: ${{ steps.run_robot_test.outputs.buyfulfill_results_url }}
   mac_results_url: 
     description: 'URL to test results'
     value: ${{ steps.run_robot_test.outputs.mac_results_url }}
