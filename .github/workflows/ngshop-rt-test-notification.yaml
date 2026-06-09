@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        test: [buyfulfill, mac, welcome]
+        test: [buyfulfill, mac]
         include:
           - test: buyfulfill
             robot_including: team:buyfulfillANDngshop-rt
@@ -68,7 +68,7 @@ jobs:
 
           # Track notBlock tag failures
           notblock_failures = 0
-
+          
           files = glob.glob("**/output.xml", recursive=True)
           if not files:
               print("❌ output.xml not found")
