@@ -33,9 +33,12 @@ inputs:
     default: ""
 
 outputs:
-  test_results_url: 
+  buy_result_url: 
     description: 'URL to test results'
-    value: ${{ steps.export_url.outputs.test_results_url }}
+    value: ${{ steps.export_url.outputs.buy_result_url }}
+  mac_result_url: 
+    description: 'URL to test results'
+    value: ${{ steps.export_url.outputs.mac_result_url }}
   
 runs:
   using: 'composite'
@@ -68,5 +71,8 @@ runs:
       env:
         ROBOT_TEST_PATH: ${{ inputs.robot_test_path }}
       run: |
-        if [[ $ROBOT_TEST_PATH == "buyfullfill" ]]
-          echo ""
+        if [[ $ROBOT_TEST_PATH == "buyfullfill" ]]; then
+          echo buy_result_url="www.google.com/buy" >> $GITHUB_OUTPUT
+        elif [[ $ROBOT_TEST_PATH == "mac" ]]; then
+          echo mac_result_url="www.google.com/mac" >> $GITHUB_OUTPUT
+        fi
