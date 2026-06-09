@@ -57,7 +57,7 @@ jobs:
                   for tag in tags:
                       tag_text = tag.text.lower()
                       if tag_text == "notblock":
-                          notblock_failures = tag.attrib['fail'])
+                          notblock_failures = int(tag.attrib['fail'])
                           if notblock_failures > 0:
                               print(f"⚠️  Found {notblock_failures} failures in 'notBlock' tagged tests - NOT blocking release train")
                       elif tag_text.startswith("team:"):
