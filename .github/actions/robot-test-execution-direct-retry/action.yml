@@ -69,12 +69,12 @@ runs:
       id: export_url
       shell: bash
       env:
-        ROBOT_TEST_PATH: ${{ inputs.robot_test_path }}
+        TEST_DOMAIN: ${{ inputs.robot_test_path }}
       run: |
-        if [[ $ROBOT_TEST_PATH == "buyfullfill" ]]; then
+        if [[ $TEST_DOMAIN == "buyfullfill" ]]; then
           echo "www.google.com/buy"
           echo buy_results_url="www.google.com/buy" >> $GITHUB_OUTPUT
-        elif [[ $ROBOT_TEST_PATH == "mac" ]]; then
+        elif [[ $TEST_DOMAIN == "mac" ]]; then
           echo "www.google.com/mac"
           echo mac_results_url="www.google.com/mac" >> $GITHUB_OUTPUT
         fi
