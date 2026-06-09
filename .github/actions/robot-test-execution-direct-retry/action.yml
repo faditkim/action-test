@@ -31,6 +31,11 @@ inputs:
     description: "Log level definition"
     required: false
     default: ""
+
+outputs:
+  test_results_url: 
+    description: 'URL to test results'
+    value: ${{ steps.export_url.outputs.test_results_url }}
   
 runs:
   using: 'composite'
@@ -56,3 +61,12 @@ runs:
         echo "ROBOT_OPT_OUTPUT_PATH -> $ROBOT_OPT_OUTPUT_PATH"
         echo "ROBOT_OPT_RETRY_LISTENER -> $ROBOT_OPT_RETRY_LISTENER"
         echo "ROBOT_OPT_LOG_LEVEL -> $ROBOT_OPT_LOG_LEVEL"
+
+    - name: Export Upload URL
+      id: export_url
+      shell: bash
+      env:
+        ROBOT_TEST_PATH: ${{ inputs.robot_test_path }}
+      run: |
+        if [[ $ROBOT_TEST_PATH == "buyfullfill" ]]
+          echo ""

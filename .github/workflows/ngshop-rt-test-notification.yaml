@@ -106,9 +106,9 @@ jobs:
 
           # Final status message
           if not is_robot_success:
-              print(f"\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
+              print("\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
           else:
-              print(f"\n✅ No blocking failures found - release train can proceed")
+              print("\n✅ No blocking failures found - release train can proceed")
 
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"robot_results={robot_results}\n")

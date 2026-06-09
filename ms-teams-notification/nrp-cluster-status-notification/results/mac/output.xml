@@ -2,10 +2,8 @@
 <robot generator="Rebot 7.4.1 (Python 3.14.3 on darwin)" generated="2026-05-04T11:52:53.114851" rpa="false" schemaversion="5">
 <statistics>
 <tag>
-<stat pass="11" fail="1" skip="0">team:mac</stat>
-<stat pass="12" fail="0" skip="0">xray-mac</stat>
-<stat pass="15" fail="0" skip="0">xray-qa-tests</stat>
-<stat pass="3" fail="0" skip="0">xray-qa-mac</stat>
+<stat pass="11" fail="3" skip="0">team:mac</stat>
+<stat pass="2" fail="1" skip="0">notblock</start>
 </tag>
 </statistics>
 </robot>
