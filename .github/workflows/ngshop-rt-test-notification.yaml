@@ -79,7 +79,7 @@ jobs:
                                   print(f"✅ {team}: All {failed} failures are non-blocking (notBlock tag)")
 
               # Final status message
-              if not is_robot_success
+              if not is_robot_success:
                   print(f"\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
               else:
                   print(f"\n✅ No blocking failures found - release train can proceed")
