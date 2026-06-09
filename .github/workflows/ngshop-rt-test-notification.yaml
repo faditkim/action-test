@@ -138,7 +138,7 @@ jobs:
             const hasConflicts = false;
             const robot_results = ${{ needs.robot-tests.outputs.robot_results }}; // array
             const buyLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
-            const macLogUrl = '${{ needs.robot-tests.outputs.mac_robot_success }}';
+            const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
             const welcomeLogUrl = 'https://www.google.com';
             const msteams_entities = [];
             const msteamsTagBuy = '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}';
