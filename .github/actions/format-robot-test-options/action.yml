@@ -77,7 +77,7 @@ runs:
         # excluding tag
         if [[ ${#ROBOT_EXCLUDING} -gt 0 ]]; then
           # NGSHOP Release Train edge-case handling for mac
-          if [[ $TEST_PATH == *"mac"* && ($ROBOT_VARIABLES == *"stg"* || $ROBOT_VARIABLES == *"staging"* ) ]]; then
+          if [[ $TEST_PATH == *"mac"* && ( $ROBOT_VARIABLES == *"stg"* || $ROBOT_VARIABLES == *"staging"* ) ]]; then
             echo "robot_opt_excluding=-e $ROBOT_EXCLUDINGORsuite:web-accessibility" >> $GITHUB_OUTPUT
           else
             echo "robot_opt_excluding=-e $ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
