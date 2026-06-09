@@ -33,7 +33,8 @@ jobs:
       contents: read
       id-token: write
     outputs:
-      test_results_url: ${{ steps.run_robot_test.outputs.test_results_url }}
+      buyfulfill_results_url: ${{ steps.run_robot_test.outputs.buyfulfill_results_url }}
+      mac_results_url: ${{ steps.run_robot_test.outputs.mac_results_url }}
       robot_results: ${{ steps.robot-summary.outputs.robot_results }}
       is_robot_success: ${{ steps.robot-summary.outputs.is_robot_success }}
 
@@ -136,8 +137,8 @@ jobs:
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
             const robot_results = ${{ needs.robot-tests.outputs.robot_results }}; // array
-            const buyLogUrl = 'https://www.google.com';
-            const macLogUrl = 'https://www.google.com';
+            const buyLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
+            const macLogUrl = '${{ needs.robot-tests.outputs.mac_robot_success }}';
             const welcomeLogUrl = 'https://www.google.com';
             const msteams_entities = [];
             const msteamsTagBuy = '${{ secrets.NGSHOP_MS_TEAMS_TAG_BUY }}';
