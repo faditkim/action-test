@@ -308,8 +308,8 @@ jobs:
             core.setOutput('card_payload', JSON.stringify(card));
             console.log(JSON.stringify(card, null, 4));
       
-      - name: Send notification to MS Teams
-        uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
-        with:
-            webhook_url: ${{ secrets.NGSHOP_CHAPTER_QA_MS_TEAMS_WEBHOOK }}
-            raw: ${{ steps.build-card.outputs.card_payload }}
+    #   - name: Send notification to MS Teams
+    #     uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
+    #     with:
+    #         webhook_url: ${{ secrets.NGSHOP_CHAPTER_QA_MS_TEAMS_WEBHOOK }}
+    #         raw: ${{ steps.build-card.outputs.card_payload }}
