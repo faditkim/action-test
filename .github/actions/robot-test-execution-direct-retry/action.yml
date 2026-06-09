@@ -71,7 +71,7 @@ runs:
       env:
         ROBOT_TEST_PATH: ${{ inputs.robot_test_path }}
       run: |
-        if [[ $ROBOT_TEST_PATH == *"buyfullfill"* ]]; then
+        if [[ $ROBOT_TEST_PATH == *"buyfulfill"* ]]; then
           echo "www.google.com/buy"
           echo buy_results_url="www.google.com/buy" >> $GITHUB_OUTPUT
         elif [[ $ROBOT_TEST_PATH == *"mac"* ]]; then
