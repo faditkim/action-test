@@ -66,32 +66,40 @@ runs:
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
         ROBOT_LOG_LEVEL: ${{ inputs.robot_log_level }}
       run: |
-        # variables
-        echo robot_opt_variables="-v ${ROBOT_VARIABLES//,/ -v }" >> $GITHUB_OUTPUT
+        # variables (only emit flag when input is non-empty)
+        if [[ -n "$ROBOT_VARIABLES" ]]; then
+          echo "robot_opt_variables=-v ${ROBOT_VARIABLES//,/ -v }" >> $GITHUB_OUTPUT
+        fi
         
         # including tag
-        echo robot_opt_including="-i $ROBOT_INCLUDING" >> $GITHUB_OUTPUT
+        echo "robot_opt_including=-i $ROBOT_INCLUDING" >> $GITHUB_OUTPUT
         
         # excluding tag
         if [[ ${#ROBOT_EXCLUDING} -gt 0 ]]; then
-          echo robot_opt_excluding="-e $ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
+          echo "robot_opt_excluding=-e $ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
         fi
 
         # retry listener
         # case of empty string (= use default)
         if [[ ${#ROBOT_RETRY_FAILED_COUNT} -eq 0 ]]; then
-          echo robot_opt_retry_listener="--listener RetryFailed:1" >> $GITHUB_OUTPUT
+          echo "robot_opt_retry_listener=--listener RetryFailed:1" >> $GITHUB_OUTPUT
         else
-          echo robot_opt_retry_listener="--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
+          echo "robot_opt_retry_listener=--listener RetryFailed:$ROBOT_RETRY_FAILED_COUNT" >> $GITHUB_OUTPUT
         fi
 
         # output directory
-        echo robot_opt_output_path="-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
+        echo "robot_opt_output_path=-d ./$ROBOT_OUTPUT_PATH" >> $GITHUB_OUTPUT
 
         # test path
-        echo robot_test_path="./tests/$TEST_PATH" >> $GITHUB_OUTPUT
+        if [[ $TEST_PATH == *"buyfulfill"* ]]; then
+          # Exception for buy-fulfill
+          echo "robot_test_path=./tests/buy-fulfill" >> $GITHUB_OUTPUT
+        else
+          echo "robot_test_path=./tests/$TEST_PATH" >> $GITHUB_OUTPUT
+        fi
+        
 
         # log level
-        if [[ ${#ROBOT_LOG_LEVEL} -gt 0 ]] ; then
-          echo robot_opt_log_level="-L $ROBOT_LOG_LEVEL" >> GITHUB_OUTPUT
+        if [[ ${#ROBOT_LOG_LEVEL} -gt 0 ]]; then
+          echo "robot_opt_log_level=-L $ROBOT_LOG_LEVEL" >> $GITHUB_OUTPUT
         fi
