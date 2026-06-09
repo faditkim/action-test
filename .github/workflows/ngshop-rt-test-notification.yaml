@@ -36,37 +36,58 @@ jobs:
           import json
 
           passed = failed = total = 0
-          is_robot_success = "true"
-          teams = ['buyfulfill', 'welcome']
+          teams = ['buyfulfill', mac]
           robot_results = []
+          is_robot_success = "true"
+
+          # Track notBlock tag failures
+          notblock_failures = 0
 
           files = glob.glob("**/output.xml", recursive=True)
           if not files:
               print("❌ output.xml not found")
           else:
-              print("✅ Found output.xml:", files[0])
-              tree = ET.parse(files[0])
-              root = tree.getroot()
-              tags = root.findall('statistics/tag/stat')
-              for tag in tags:
-                  if tag.text.startswith("team:"):
-                      team = tag.text.split(":")[1]
-                      if team in teams:
-                          passed = int(tag.attrib['pass'])
-                          failed = int(tag.attrib['fail'])
-                          total = passed + failed
-                          if failed > 0:
-                            is_robot_success = "false"
-                            print(f"Test fails in team: {team}. Set output \"is_robot_success\" to {is_robot_success}")
+              for file in files:
+                  print("✅ Found output.xml:", file)
+                  tree = ET.parse(file)
+                  root = tree.getroot()
+                  tags = root.findall('statistics/tag/stat')
 
-                          print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
-                          robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
-              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-                  f.write(f"robot_results={robot_results}\n")
-                  f.write(f"is_robot_success={is_robot_success}\n")
-                  
+                  # Get amount of non-blocking test failures
+                  for tag in tags:
+                      tag_text = tag.text.lower()
+                      if tag_text == "notblock":
+                          notblock_failures = tag.attrib['fail'])
+                          if notblock_failures > 0:
+                              print(f"⚠️  Found {notblock_failures} failures in 'notBlock' tagged tests - NOT blocking release train")
+                      elif tag_text.startswith("team:"):
+                          team = tag.text.split(":")[1]
+                          if team in teams:
+                              passed = int(tag.attrib['pass'])
+                              failed = int(tag.attrib['fail'])
+                              total = passed + failed
+                              print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
+                              robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
+
+                              # Check if team has blocking failures
+                              # Blocking failures = total failures - notBlock failures
+                              blocking_failures = failed - notblock_failures
+                              if blocking_failures > 0:
+                                  is_robot_success = "false"
+                                  print(f"❌ {team}: Found {blocking_failures} blocking failures (total: {failed}, notBlock: {notblock_failures})")
+                              elif failed > 0:
+                                  print(f"✅ {team}: All {failed} failures are non-blocking (notBlock tag)")
+
+                # Final status message
+                if is_robot_success == "false":
+                    print(f"\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
+                else:
+                    print(f"\n✅ No blocking failures found - release train can proceed")
+
+                with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                    f.write(f"robot_results={robot_results}\n")
+                    f.write(f"is_robot_success={is_robot_success}\n")
           EOF
-
   finalize:
     runs-on: ubuntu-latest
     needs: [robot-tests]
