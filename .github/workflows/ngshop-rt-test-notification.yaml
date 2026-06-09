@@ -24,7 +24,7 @@ jobs:
             robot_output_path: results/buy
             robot_retry_failed_count: 1
           - test: mac
-            robot_variables: ENV:dev
+            robot_variables: ENV:staging
             robot_including: team:macANDngshop-rt
             robot_excluding: no-run
             robot_output_path: results/mac
