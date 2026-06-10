@@ -36,9 +36,7 @@ jobs:
       buyfulfill_results_url: ${{ steps.run_robot_test.outputs.buyfulfill_results_url }}
       mac_results_url: ${{ steps.run_robot_test.outputs.mac_results_url }}
       robot_results_buyfulfill: ${{ steps.robot-summary.outputs.robot_results_buyfulfill }}
-      is_robot_success_buyfulfill: ${{ steps.robot-summary.outputs.is_robot_success_buyfulfill }}
       robot_results_mac: ${{ steps.robot-summary.outputs.robot_results_mac }}
-      is_robot_success_mac: ${{ steps.robot-summary.outputs.is_robot_success_mac }}
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -87,7 +85,7 @@ jobs:
           for team in teams:
               files = glob.glob(f"**/{team}/output.xml", recursive=True)
               if not files:
-                  print("❌ output.xml not found")
+                  print(f"❌ output.xml not found for {team}")
               else:
                   print("✅ Found output.xml:", files[0])
                   tree = ET.parse(files[0])
@@ -105,27 +103,13 @@ jobs:
                           passed = int(tag.attrib['pass'])
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
-                          print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
-                          robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed}))
-                          
-                          # Check if team has blocking failures
-                          # Blocking failures = total failures - notBlock failures
-                          blocking_failures = failed - notblock_failures
-                          if blocking_failures > 0:
-                              is_robot_success = "false"
-                              print(f"❌ {team}: Found {blocking_failures} blocking failures (total: {failed}, notBlock: {notblock_failures})")
-                          elif failed > 0:
-                              print(f"✅ {team}: All {failed} failures are non-blocking (notBlock tag)")
 
-          # Final status message
-          if not is_robot_success:
-              print("\n❌ Release train BLOCKED due to test failures without 'notBlock' tag")
-          else:
-              print("\n✅ No blocking failures found - release train can proceed")
+              blocking_failures = failed - notblock_failures
+              print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
+              robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed, "block": blocking_failures}))
               
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"robot_results_${{ matrix.test }}={robot_results}\n")
-              f.write(f"is_robot_success_${{ matrix.test }}={is_robot_success}\n")
           EOF
   finalize:
     runs-on: ubuntu-latest
@@ -141,20 +125,17 @@ jobs:
         with:
           #language=javascript
           script: |
-            const isBuyFulfillRobotSuccess = '${{needs.robot-tests.outputs.is_robot_success_buyfulfill}}'
-            const isMacSuccessRobotSuccess = '${{needs.robot-tests.outputs.is_robot_success_mac}}'
             const buyFulfillRobotReuslt = ${{ needs.robot-tests.outputs.robot_results_buyfulfill }}
             const macRobotResult = ${{ needs.robot-tests.outputs.robot_results_mac }}
-
-            const is_robot_success = isBuyFulfillRobotSuccess && isMacSuccessRobotSuccess
-            console.log("buyFulfillRobotReuslt > " + buyFulfillRobotReuslt)
-            console.log("macRobotResult > " + macRobotResult)
+            const is_robot_success = 'true'
 
             const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
-
-            console.log("is_robot_success > " + is_robot_success)
-            console.log("robot_results > " + robot_results)
-
+            for (const result of robot_results) {
+                const parsedResult = JSON.parse(result);
+                if (parsedResult.block > 0) {
+                    is_robot_success = 'false'
+                }
+            }
             core.setOutput('is_robot_success', is_robot_success);
             core.setOutput('robot_results', robot_results);
 
