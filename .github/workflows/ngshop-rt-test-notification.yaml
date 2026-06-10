@@ -127,7 +127,7 @@ jobs:
           script: |
             const buyFulfillRobotReuslt = ${{ needs.robot-tests.outputs.robot_results_buyfulfill }}
             const macRobotResult = ${{ needs.robot-tests.outputs.robot_results_mac }}
-            const is_robot_success = 'true'
+            is_robot_success = 'true'
 
             const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
             for (const result of robot_results) {
