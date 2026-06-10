@@ -35,8 +35,10 @@ jobs:
     outputs:
       buyfulfill_results_url: ${{ steps.run_robot_test.outputs.buyfulfill_results_url }}
       mac_results_url: ${{ steps.run_robot_test.outputs.mac_results_url }}
-      robot_results: ${{ steps.robot-summary.outputs.robot_results }}
-      is_robot_success: ${{ steps.robot-summary.outputs.is_robot_success }}
+      robot_results_buyfulfill: ${{ steps.robot-summary.outputs.robot_results_buyfulfill }}
+      is_robot_success_buyfulfill: ${{ steps.robot-summary.outputs.is_robot_success_buyfulfill }}
+      robot_results_mac: ${{ steps.robot-summary.outputs.robot_results_mac }}
+      is_robot_success_mac: ${{ steps.robot-summary.outputs.is_robot_success_mac }}
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -114,8 +116,8 @@ jobs:
               print("\n✅ No blocking failures found - release train can proceed")
               
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"robot_results={robot_results}\n")
-              f.write(f"is_robot_success={is_robot_success}\n")
+              f.write(f"robot_results_${{ matrix.test }}={robot_results}\n")
+              f.write(f"is_robot_success_${{ matrix.test }}={is_robot_success}\n")
           EOF
   finalize:
     runs-on: ubuntu-latest
@@ -124,8 +126,29 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Merge Robot Results
+        if: ${{ always() }}
+        id: merge-robot-results
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          #language=javascript
+          script: |
+            const isBuyFulfillRobotSuccess = '${{needs.robot-tests.outputs.is_robot_success_buyfulfill}}'
+            const isMacSuccessRobotSuccess = '${{needs.robot-tests.outputs.is_robot_success_mac}}'
+            const buyFulfillRobotReuslt = ${{ needs.robot-tests.outputs.robot_results_buyfulfill }}
+            const macRobotResult = ${{ needs.robot-tests.outputs.robot_results_mac }}
+
+            const is_robot_success = isBuyFulfillRobotSuccess && isMacSuccessRobotSuccess
+            const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
+
+            console.log("is_robot_success > " + is_robot_success)
+            console.log("robot_results > " + robot_results)
+
+            core.setOutput('is_robot_success', is_robot_success);
+            core.setOutput('robot_results', robot_results);
+
       - name: Build AdaptiveCard payload for Teams
-        if: ${{ needs.robot-tests.outputs.is_robot_success == 'false'}}
+        if: ${{ steps.merge-robot-results.outputs.is_robot_success == 'false' }}
         id: build-card
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
@@ -141,8 +164,8 @@ jobs:
             const destEnv = 'staging';
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
-            const robot_results = ${{ needs.robot-tests.outputs.robot_results }}; // array
-            const buyLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
+            const robot_results = ${{ steps.merge-robot-results.outputs.results }}; // array
+            const buyfulfillLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
             const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
             const welcomeLogUrl = 'https://www.google.com';
             const msteams_entities = [];
@@ -150,7 +173,6 @@ jobs:
             const msteamsTagMac = '${{ secrets.NGSHOP_MS_TEAMS_TAG_MAC }}';
             const msteamsTagQA = '${{ secrets.NGSHOP_MS_TEAMS_TAG_QA }}';
             const msteamsTagWelcome = '${{ secrets.NGSHOP_MS_TEAMS_TAG_WELCOME }}';
-            const is_robot_success = '${{ needs.robot-tests.outputs.is_robot_success }}';
 
             // Determine overall status
             // Use || 0 to handle empty strings and NaN values when steps are skipped
