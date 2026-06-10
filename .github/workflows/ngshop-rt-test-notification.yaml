@@ -56,8 +56,16 @@ jobs:
 
       - name: Remove output not related file
         shell: bash
+        env:
+            TEST_DOMAIN: ${{ matrix.test }}
         run: |
-          rm ms-teams-notification/nrp-cluster-status-notification/results/${{ matrix.test }}/output.xml
+          if [[ $TEST_DOMAIN == *"mac"* ]]; then
+            rm ms-teams-notification/nrp-cluster-status-notification/results/buyfulfill/output.xml
+          elif [[ $TEST_DOMAIN == *"buyfulfill"* ]]; then
+            rm rm ms-teams-notification/nrp-cluster-status-notification/results/mac/output.xml
+          else
+            ehco "❌ NOT FOUND"
+          fi
 
       - name: Parse Robot Framework results
         id: robot-summary
