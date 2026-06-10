@@ -145,7 +145,7 @@ jobs:
             console.log("robot_results > " + robot_results)
 
             core.setOutput('is_robot_success', is_robot_success);
-            core.setOutput('robot_results', [robot_results]);
+            core.setOutput('robot_results', robot_results);
 
       - name: Build AdaptiveCard payload for Teams
         if: ${{ steps.merge-robot-results.outputs.is_robot_success == 'false' }}
