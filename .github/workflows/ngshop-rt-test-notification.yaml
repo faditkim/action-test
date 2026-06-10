@@ -62,7 +62,7 @@ jobs:
           if [[ $TEST_DOMAIN == *"mac"* ]]; then
             rm ms-teams-notification/nrp-cluster-status-notification/results/buyfulfill/output.xml
           elif [[ $TEST_DOMAIN == *"buyfulfill"* ]]; then
-            rm rm ms-teams-notification/nrp-cluster-status-notification/results/mac/output.xml
+            rm ms-teams-notification/nrp-cluster-status-notification/results/mac/output.xml
           else
             ehco "❌ NOT FOUND"
           fi
