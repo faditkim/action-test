@@ -62,7 +62,7 @@ jobs:
           elif [[ $TEST_DOMAIN == *"buyfulfill"* ]]; then
             rm ms-teams-notification/nrp-cluster-status-notification/results/mac/output.xml
           else
-            ehco "❌ NOT FOUND"
+            echo "❌ NOT FOUND"
           fi
 
       - name: Parse Robot Framework results
@@ -104,9 +104,9 @@ jobs:
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
 
-              blocking_failures = failed - notblock_failures
-              print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
-              robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed, "block": blocking_failures}))
+          blocking_failures = failed - notblock_failures
+          print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
+          robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed, "block": blocking_failures}))
               
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"robot_results_${{ matrix.test }}={robot_results}\n")
