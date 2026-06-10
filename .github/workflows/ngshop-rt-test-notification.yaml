@@ -168,7 +168,7 @@ jobs:
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
             const robot_results = ${{ steps.merge-robot-results.outputs.robot_results }}; // array ['{"team": "buyfulfill", "passed": 11, "failed": 1}', '{"team": "mac", "passed": 11, "failed": 3}']
-            const buyfulfillLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
+            const buyLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
             const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
             const welcomeLogUrl = 'https://www.google.com';
             const msteams_entities = [];
