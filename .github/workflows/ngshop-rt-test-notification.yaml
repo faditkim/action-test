@@ -164,7 +164,7 @@ jobs:
             const destEnv = 'staging';
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
-            const robot_results = ${{ steps.merge-robot-results.outputs.results }}; // array
+            const robot_results = ${{ steps.merge-robot-results.outputs.robot_results }}; // array
             const buyfulfillLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
             const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
             const welcomeLogUrl = 'https://www.google.com';
