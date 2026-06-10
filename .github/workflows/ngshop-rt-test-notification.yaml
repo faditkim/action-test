@@ -52,6 +52,11 @@ jobs:
           robot_output_path: ${{ matrix.robot_output_path }}
           robot_retry_failed_count: ${{ matrix.robot_retry_failed_count }}
 
+      - name: Remove output not related file
+        shell: bash
+        run: |
+          rm ms-teams-notification/nrp-cluster-status-notification/results/${{ matrix.test }}/output.xml
+
       - name: Parse Robot Framework results
         id: robot-summary
         if: always()
