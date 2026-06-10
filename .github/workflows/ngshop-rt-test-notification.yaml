@@ -139,6 +139,9 @@ jobs:
             const macRobotResult = ${{ needs.robot-tests.outputs.robot_results_mac }}
 
             const is_robot_success = isBuyFulfillRobotSuccess && isMacSuccessRobotSuccess
+            console.log("buyFulfillRobotReuslt > " + buyFulfillRobotReuslt)
+            console.log("macRobotResult > " + macRobotResult)
+
             const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
 
             console.log("is_robot_success > " + is_robot_success)
