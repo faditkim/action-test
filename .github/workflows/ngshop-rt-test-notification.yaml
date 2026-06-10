@@ -145,10 +145,10 @@ jobs:
             const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
 
             console.log("is_robot_success > " + is_robot_success)
-            console.log("robot_results > " + robot_results)
+            console.log("robot_results > " + robot_results.toString())
 
             core.setOutput('is_robot_success', is_robot_success);
-            core.setOutput('robot_results', JSON.stringify(robot_results));
+            core.setOutput('robot_results', robot_results.toString());
 
       - name: Build AdaptiveCard payload for Teams
         if: ${{ steps.merge-robot-results.outputs.is_robot_success == 'false' }}
@@ -167,7 +167,7 @@ jobs:
             const destEnv = 'staging';
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const hasConflicts = false;
-            const robot_results = ${{ steps.merge-robot-results.outputs.robot_results }}; // array
+            const robot_results = ${{ steps.merge-robot-results.outputs.robot_results }}; // array ['{"team": "buyfulfill", "passed": 11, "failed": 1}', '{"team": "mac", "passed": 11, "failed": 3}']
             const buyfulfillLogUrl = '${{ needs.robot-tests.outputs.buyfulfill_results_url }}';
             const macLogUrl = '${{ needs.robot-tests.outputs.mac_results_url }}';
             const welcomeLogUrl = 'https://www.google.com';
