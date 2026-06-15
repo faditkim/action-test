@@ -385,7 +385,7 @@ jobs:
           #language=javascript
           script: |
             const robot_results = ${{ steps.build-card.outputs.card_payload }};
-            console.log(robot_results)
+            console.log(JSON.stringify(card, null, 4));
       
       - name: Send notification to MS Teams to internal
         if: ${{ steps.merge-robot-results.outputs.all_robot_success == 'false' }}
@@ -394,4 +394,4 @@ jobs:
           #language=javascript
           script: |
             const robot_results = ${{ steps.build-card.outputs.card_payload }};
-            console.log(robot_results)
+            console.log(JSON.stringify(card, null, 4));
