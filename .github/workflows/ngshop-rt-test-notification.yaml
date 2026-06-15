@@ -138,11 +138,15 @@ jobs:
             const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
             for (const result of robot_results) {
                 const parsedResult = JSON.parse(result);
-                if (parsedResult.block > 0) {
+                if (parsedResult.block_failed > 0) {
                     is_robot_success = 'false'
+                }
+                if (parsedResult.falied > 0) {
+                    all_robot_success = 'false'
                 }
             }
             core.setOutput('is_robot_success', is_robot_success);
+            core.setOutput('all_robot_success', all_robot_success);
             core.setOutput('robot_results', robot_results);
 
       - name: Build AdaptiveCard payload for Teams
