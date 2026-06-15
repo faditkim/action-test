@@ -133,8 +133,8 @@ jobs:
           script: |
             const buyFulfillRobotReuslt = ${{ needs.robot-tests.outputs.robot_results_buyfulfill }}
             const macRobotResult = ${{ needs.robot-tests.outputs.robot_results_mac }}
-            is_robot_success = 'true'
-            all_robot_success = 'true'
+            is_robot_success = 'true' // if non-blocking test fails, this value is still true
+            all_robot_success = 'true' // check all test failures (QA internal purpose)
 
             const robot_results = buyFulfillRobotReuslt.concat(macRobotResult)
             for (const result of robot_results) {
@@ -146,6 +146,7 @@ jobs:
                     all_robot_success = 'false'
                 }
             }
+            // Output the merged robot result & final status
             core.setOutput('is_robot_success', is_robot_success);
             core.setOutput('all_robot_success', all_robot_success);
             core.setOutput('robot_results', robot_results);
