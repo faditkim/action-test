@@ -3,7 +3,7 @@
 <statistics>
 <tag>
 <stat pass="11" fail="3" skip="0">team:buyfulfill</stat>
-<stat pass="3" fail="0" skip="0">notblock</stat>
+<stat pass="0" fail="3" skip="0">notblock</stat>
 </tag>
 </statistics>
 </robot>
