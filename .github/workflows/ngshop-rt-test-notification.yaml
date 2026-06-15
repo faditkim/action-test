@@ -142,7 +142,7 @@ jobs:
                 if (parsedResult.block_failed > 0) {
                     is_robot_success = 'false'
                 }
-                if (parsedResult.falied > 0) {
+                if (parsedResult.failed > 0) {
                     all_robot_success = 'false'
                 }
             }
