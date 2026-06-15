@@ -77,37 +77,43 @@ jobs:
 
           passed = failed = total = 0
           teams = ['buyfulfill', 'mac']
+          result_team_name = ""
           robot_results = []
           is_robot_success = "true"
 
           # Track notBlock tag failures
-          notblock_failures = 0
+          non_block_failed = 0
+
           for team in teams:
               files = glob.glob(f"**/{team}/output.xml", recursive=True)
               if not files:
-                  print(f"❌ output.xml not found for {team}")
+                  print(f"📌 ${team}/output.xml → Ignored")
               else:
                   print("✅ Found output.xml:", files[0])
                   tree = ET.parse(files[0])
                   root = tree.getroot()
                   tags = root.findall('statistics/tag/stat')
-                  
-                  # Get amount of non-blocking test failures
+
                   for tag in tags:
                       tag_text = tag.text.lower()
+                      
+                      # Get amount of non-blocking test failures
                       if tag_text == "notblock":
-                          notblock_failures = int(tag.attrib['fail'])
-                          if notblock_failures > 0:
-                              print(f"⚠️  Found {notblock_failures} failures in 'notBlock' tagged tests - NOT blocking release train")
+                          non_block_failed = int(tag.attrib['fail'])
+                          if non_block_failed > 0:
+                              print(f"⚠️  Found {non_block_failed} failures in 'notBlock' tagged tests - NOT blocking release train")
+                      # Get amount of total test failure
                       elif tag_text == f"team:{team}":
+                          result_team_name = team
                           passed = int(tag.attrib['pass'])
                           failed = int(tag.attrib['fail'])
                           total = passed + failed
-
-          blocking_failures = failed - notblock_failures
-          print(f"Robot Results / {team} → Passed={passed}, Failed={failed}, Total={total}")
-          robot_results.append(json.dumps({"team": team, "passed": passed, "failed": failed, "block": blocking_failures}))
               
+          # Blocking failures = total failures - notBlock failures
+          block_failed = failed - non_block_failed
+          print(f"Robot Results / {result_team_name} → Total={total}, Passed={passed}, Block-Failed={block_failed}, Non-Block-Failed={non_block_failed}")
+          robot_results.append(json.dumps({"team": result_team_name, "passed": passed, "failed": failed, "block_failed": block_failed, "non_block_failed": non_block_failed}))
+
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"robot_results_${{ matrix.test }}={robot_results}\n")
           EOF
@@ -231,30 +237,46 @@ jobs:
                     team = parsedResult.team;
                     passed = parsedResult.passed;
                     failed = parsedResult.failed;
+                    blockingFailed = parsedResult.block_failed
+                    nonBlockingFailed = parsedResult.non_block_failed
                     total = passed + failed;
-                    value = `📊 Total: ${total} ✅ Passed: ${passed} ❌ Failed: ${failed}`;
-                    team = (team === 'buyfulfill') ? 'buy' : team;
-                    // preparation for mention if test failed.
-                    if (failed > 0) {
-                        mentioned_id = (team === 'buy') ? msteamsTagBuy : ((team === 'welcome') ? msteamsTagWelcome : msteamsTagMac);
-                        // msteams_entities.push({
-                        //    type: "mention",
-                        //    text: `<at>${team}</at>`,
-                        //    mentioned: {
-                        //        id: mentioned_id,
-                        //        name: team,
-                        //        type: "tag"
-                        //    }
-                        // });
-                        logUrl = (team === 'buy') ? buyLogUrl : ((team === 'welcome') ? welcomeLogUrl : macLogUrl);
-                        // team = `<at>${team}</at>`;
-                        robotResultFactSet[0].value = "<at>qa</at>";
-                        value = `📊 Total: ${total} ✅ Passed: ${passed} [❌ Failed: ${failed}](${logUrl})`;
+                    
+                    logUrl = ''
+                    mentioned_id = ''
+                    
+                    switch (team) {
+                      case 'buyfulfill':
+                        team = 'buy'
+                        logUrl = 'buyLogUrl'
+                        mentioned_id = msteamsTagBuy
+                        break;
+                      case "mac":
+                        logUrl = macLogUrl
+                        mentioned_id = msteamsTagMac
+                        break;
+                      default:
+                        console.log("❌ Test is not found...");
                     }
+                    
+                    // preparation for mention if test failed.
+                    if (blockingFailed > 0) {
+                        msteams_entities.push({
+                            type: "mention",
+                            text: `<at>${team}</at>`,
+                            mentioned: {
+                                id: mentioned_id,
+                                name: team,
+                                type: "tag"
+                            }
+                        });
+                        team = `<at>${team}</at>`;
+                        robotResultFactSet[0].value = "<at>qa</at>";
+                    }
+                    value = `[📊 Total: ${total}](${logUrl}) ✅ Passed: ${passed} ❌ Failed: ${blockingFailed} ⚠️ Failed (Non-blocking): ${nonBlockingFailed}`;
                     robotResultFactSet.push({ title: team, value: value});
                 }
                 // add qa mention if any test failed to notify qa team
-                // if (msteams_entities.length > 0) {
+                if (msteams_entities.length > 0) {
                     msteams_entities.push({
                         type: "mention",
                         text: "<at>qa</at>",
@@ -264,7 +286,7 @@ jobs:
                             type: "tag"
                         }
                     });
-                // }
+                }
 
                 bodyItems.push({
                     type: "Container",
