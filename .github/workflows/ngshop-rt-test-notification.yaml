@@ -253,7 +253,7 @@ jobs:
                     switch (team) {
                       case "buyfulfill":
                         team = 'buy'
-                        logUrl = 'buyLogUrl'
+                        logUrl = buyLogUrl
                         mentioned_id = msteamsTagBuy
                         break;
                       case "mac":
