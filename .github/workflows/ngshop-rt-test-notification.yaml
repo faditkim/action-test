@@ -277,7 +277,7 @@ jobs:
                         team = `<at>${team}</at>`;
                         robotResultFactSet[0].value = "<at>qa</at>";
                     }
-                    value = `[📊 Total: ${total}](${logUrl}) ✅ Passed: ${passed} ❌ Failed: ${blockingFailed} ⚠️ Failed (Non-blocking): ${nonBlockingFailed}`;
+                    value = `[📊 Total: ${total}](${logUrl}) ✅ Passed: ${passed} ❌ Failed: ${blockingFailed}\n ⚠️ Failed (Non-blocking): ${nonBlockingFailed}`;
                     robotResultFactSet.push({ title: team, value: value});
                 }
                 // add qa mention if any test failed to notify qa team
@@ -378,8 +378,20 @@ jobs:
             core.setOutput('card_payload', JSON.stringify(card));
             console.log(JSON.stringify(card, null, 4));
       
-    #   - name: Send notification to MS Teams
-    #     uses: Skitionek/notify-microsoft-teams@9c67757f64d610fb6748d8ff3c11f284355ed7ec # v1.0.8
-    #     with:
-    #         webhook_url: ${{ secrets.NGSHOP_CHAPTER_QA_MS_TEAMS_WEBHOOK }}
-    #         raw: ${{ steps.build-card.outputs.card_payload }}
+      - name: Send notification to MS Teams
+        if: ${{ steps.merge-robot-results.outputs.is_robot_success == 'false' }}
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          #language=javascript
+          script: |
+            const robot_results = ${{ steps.build-card.outputs.card_payload }};
+            console.log(robot_results)
+      
+      - name: Send notification to MS Teams to internal
+        if: ${{ steps.merge-robot-results.outputs.all_robot_success == 'false' }}
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          #language=javascript
+          script: |
+            const robot_results = ${{ steps.build-card.outputs.card_payload }};
+            console.log(robot_results)
