@@ -128,7 +128,8 @@ runs:
           echo "robot_opt_log_level=-L $ROBOT_LOG_LEVEL" >> $GITHUB_OUTPUT
         fi
 
-        # parallel (only for parallel execution)
-        if [[ ${#PABOT_PARALLEL_COUNT} -gt 0 ]]; then
+        if [[ ${#PABOT_PARALLEL_COUNT} -gt 0 && $PABOT_PARALLEL_COUNT =~ ^[0-9]+$ ]]; then
           echo "pabot_opt_parallel_count=--processes $PABOT_PARALLEL_COUNT" >> $GITHUB_OUTPUT
+        else
+          echo "📌 Prarallel is not applied! Input prarllel: $PABOT_PARALLEL_COUNT"
         fi
