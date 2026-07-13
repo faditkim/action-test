@@ -54,6 +54,5 @@ runs:
         robot_retry_failed_count: ${{ inputs.robot_retry_failed_count }} # default: 1
         robot_output_path: ${{ inputs.robot_output_path }} # default: results
         robot_log_level: ${{ inputs.robot_log_level }} # default: empty
-        parallel_count: 1
       continue-on-error: true
   
