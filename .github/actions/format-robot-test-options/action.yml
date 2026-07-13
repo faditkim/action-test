@@ -3,7 +3,7 @@ description: Composite action that executes a Robot Framework test
 
 inputs:
   test_path:
-    description: "Team name for test execution"
+    description: "Test suite folder path relative to ./tests/ (e.g. buy-fulfill)"
     required: true
   robot_variables:
     description: "Injected variables for robot tests"
@@ -22,34 +22,47 @@ inputs:
     description: "A number of retry count"
     required: false
     default: "1"
+  robot_settag:
+    description: "Input to set a tag for robot tests"
+    required: false
   robot_log_level:
-    description: "A level defintion of robot test log"
+    description: "Log level for robot output (e.g. DEBUG, TRACE). Empty = default (INFO)"
+    required: false
+    default: ""
+  pabot_parallel_count:
+    description: "Process count for parallel robot execution. Empty = default (Not using)"
     required: false
     default: ""
 
 outputs:
-  robot_opt_variables: 
-    description: 'URL to test results'
+  robot_opt_variables:
+    description: 'Formatted -v flags (e.g. "-v KEY:val -v KEY2:val2"), empty if no variables'
     value: ${{ steps.robot_options.outputs.robot_opt_variables }}
-  robot_opt_including: 
-    description: 'URL to test results'
+  robot_opt_including:
+    description: 'Formatted -i include tag flag (e.g. "-i my-tag")'
     value: ${{ steps.robot_options.outputs.robot_opt_including }}
-  robot_opt_excluding: 
-    description: 'URL to test results'
+  robot_opt_excluding:
+    description: 'Formatted -e exclude tag flag (e.g. "-e skip-tag"), empty if not set'
     value: ${{ steps.robot_options.outputs.robot_opt_excluding }}
-  robot_opt_retry_listener: 
-    description: 'URL to test results'
+  robot_opt_retry_listener:
+    description: 'Formatted --listener RetryFailed flag (e.g. "--listener RetryFailed:1")'
     value: ${{ steps.robot_options.outputs.robot_opt_retry_listener }}
-  robot_opt_output_path: 
-    description: 'URL to test results'
+  robot_opt_output_path:
+    description: 'Formatted -d output directory flag (e.g. "-d ./results")'
     value: ${{ steps.robot_options.outputs.robot_opt_output_path }}
-  robot_test_path: 
-    description: 'URL to test results'
+  robot_test_path:
+    description: 'Resolved test suite path (e.g. "./tests/buy-fulfill")'
     value: ${{ steps.robot_options.outputs.robot_test_path }}
-  robot_opt_log_level: 
-    description: 'URL to test results'
+  robot_opt_log_level:
+    description: 'Formatted -L log level flag (e.g. "-L DEBUG"), empty if not set'
     value: ${{ steps.robot_options.outputs.robot_opt_log_level }}
-  
+  robot_opt_settag:
+    description: 'Formatted -G flag (e.g. "-G my-tag"), empty if not set'
+    value: ${{ steps.robot_options.outputs.robot_opt_settag }}
+  pabot_opt_parallel_count:
+    description: 'Formatted --processes count flag (e.g. "--processes 2"), empty if not set'
+    value: ${{ steps.robot_options.outputs.pabot_opt_parallel_count }}
+
 runs:
   using: 'composite'
 
@@ -64,7 +77,9 @@ runs:
         ROBOT_EXCLUDING: ${{ inputs.robot_excluding }}
         ROBOT_OUTPUT_PATH: ${{ inputs.robot_output_path }}
         ROBOT_RETRY_FAILED_COUNT: ${{ inputs.robot_retry_failed_count }}
+        ROBOT_SETTAG: ${{ inputs.robot_settag }}
         ROBOT_LOG_LEVEL: ${{ inputs.robot_log_level }}
+        PABOT_PARALLEL_COUNT: ${{ inputs.pabot_parallel_count }}
       run: |
         # variables (only emit flag when input is non-empty)
         if [[ -n "$ROBOT_VARIABLES" ]]; then
@@ -78,7 +93,7 @@ runs:
         if [[ ${#ROBOT_EXCLUDING} -gt 0 ]]; then
           # NGSHOP Release Train edge-case handling for mac
           if [[ $TEST_PATH == *"mac"* && ( $ROBOT_VARIABLES == *"stg"* || $ROBOT_VARIABLES == *"staging"* ) ]]; then
-            echo "robot_opt_excluding=-e suite:web-accessibilityOR$ROBOT_EXCLUDING " >> $GITHUB_OUTPUT
+            echo "robot_opt_excluding=-e suite:web-accessibilityOR$ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
           else
             echo "robot_opt_excluding=-e $ROBOT_EXCLUDING" >> $GITHUB_OUTPUT
           fi
@@ -102,9 +117,18 @@ runs:
         else
           echo "robot_test_path=./tests/$TEST_PATH" >> $GITHUB_OUTPUT
         fi
-        
+
+        # set tag (only emit flag when input is non-empty)
+        if [[ -n "$ROBOT_SETTAG" ]]; then
+          echo "robot_opt_settag=-G ${ROBOT_SETTAG//,/ -G }" >> $GITHUB_OUTPUT
+        fi
 
         # log level
         if [[ ${#ROBOT_LOG_LEVEL} -gt 0 ]]; then
           echo "robot_opt_log_level=-L $ROBOT_LOG_LEVEL" >> $GITHUB_OUTPUT
+        fi
+
+        # parallel (only for parallel execution)
+        if [[ ${#PABOT_PARALLEL_COUNT} -gt 0 ]]; then
+          echo "pabot_opt_parallel_count=--processes $PABOT_PARALLEL_COUNT" >> $GITHUB_OUTPUT
         fi

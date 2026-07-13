@@ -41,27 +41,19 @@ runs:
   steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-    - name: Formatting Robot Framework options
-      id: format_robot_options
-      uses: faditkim/action-test/.github/actions/format-robot-test-options@main
-      with: 
-        test_path: ${{ inputs.test_path }}
-        robot_variables: ${{ inputs.robot_variables }}
-        robot_including: ${{ inputs.robot_including }}
-        robot_excluding: ${{ inputs.robot_excluding }}
-        robot_output_path: ${{ inputs.robot_output_path }}
-        robot_retry_failed_count: ${{ inputs.robot_retry_failed_count }}
-
     - name: Run Robot Framework tests direct retry
-      id: run_robot_test
+      id: run_robot_tests
       uses: faditkim/action-test/.github/actions/robot-test-execution-direct-retry@main
       with:
-        github_checkout_path: .
-        robot_test_path: ${{ steps.format_robot_options.outputs.robot_test_path }}
-        robot_opt_variables: ${{ steps.format_robot_options.outputs.robot_opt_variables }}
-        robot_opt_including: ${{ steps.format_robot_options.outputs.robot_opt_including }}
-        robot_opt_excluding: ${{ steps.format_robot_options.outputs.robot_opt_excluding }}
-        robot_opt_retry_listener: ${{ steps.format_robot_options.outputs.robot_opt_retry_listener }}
-        robot_opt_output_path: ${{ steps.format_robot_options.outputs.robot_opt_output_path }}
-        robot_opt_log_level: ${{steps.format_robot_options.outputs.robot_opt_log_level}}
+        exec_env: development
+        github_checkout_path: ${{ inputs.github_checkout_path }}
+        test_path: ${{ inputs.test_path }}
+        robot_variables: ${{ inputs.robot_variables }} # key1:value,key2:value2 format
+        robot_including: ${{ inputs.robot_including }} # xANDyORz format
+        robot_excluding: ${{ inputs.robot_excluding }} # xANDyORz format
+        robot_retry_failed_count: ${{ inputs.robot_retry_failed_count }} # default: 1
+        robot_output_path: ${{ inputs.robot_output_path }} # default: results
+        robot_log_level: ${{ inputs.robot_log_level }} # default: empty
+        parallel_count: 2
+      continue-on-error: true
   
