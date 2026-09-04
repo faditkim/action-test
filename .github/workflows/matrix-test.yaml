@@ -18,7 +18,7 @@ jobs:
         run: |
           # Comment validation
           ROBOT_COMMAND_REGEXP="^robot[[:space:]]+(all|puc-at|puc-de|puc-pl|puc-nl|ansons)[[:space:]]+([^[:space:]]+).*$"
-          if [[ ${{ github.event.comment.body }} =~ $ROBOT_COMMAND_REGEXP ]]; then
+          if [[ "${{ github.event.comment.body }}" =~ $ROBOT_COMMAND_REGEXP ]]; then
             tenant="${BASH_REMATCH[1]}"
             suite="${BASH_REMATCH[2]}"
             run_if_puc=$([[ "$target" =~ puc ]] && echo true  || echo false)
