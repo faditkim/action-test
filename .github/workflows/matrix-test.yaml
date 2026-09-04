@@ -41,3 +41,24 @@ jobs:
           else
             exit 1
           fi
+  build-android-apps:
+    needs: set-matrix
+    permissions:
+      contents: read
+      id-token: write # Needed to be able to use Workload Identity Federation
+      pull-requests: write # needed to provide test results in PR comment
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
+    steps:
+      - name: printing
+        shell: bash
+        run: |
+          echo ${{ matrix.build }}
+          echo ${{ matrix.app }}
+          echo ${{ matrix.environment }}
+          echo ${{ matrix.run_if }}
+          echo ${{ matrix.tenant }}
+          echo ${{ matrix.suite }}
