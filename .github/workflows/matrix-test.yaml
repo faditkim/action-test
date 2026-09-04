@@ -23,8 +23,8 @@ jobs:
           if [[ "$COMMENT_BODY" =~ $ROBOT_COMMAND_REGEXP ]]; then
             tenant="${BASH_REMATCH[1]}"
             suite="${BASH_REMATCH[2]}"
-            run_if_puc=$([[ "$tenant" =~ puc ]] && echo true  || echo false)
-            run_if_ansons=$([[ "$tenant" =~ ansons ]] && echo true  || echo false)
+            run_if_puc=$([[ "$tenant" =~ puc || "$tenant" =~ all ]] && echo true  || echo false)
+            run_if_ansons=$([[ "$tenant" =~ ansons || "$tenant" =~ all ]] && echo true  || echo false)
             matrix=$(jq -nc \
               --argjson run_if_puc "$run_if_puc" \
               --argjson run_if_ansons "$run_if_ansons" \
