@@ -54,6 +54,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
     steps:
       - name: printing
+        if: ${{ matrix.run_if == 'true' && success() }}
         shell: bash
         run: |
           echo ${{ matrix.build }}
